@@ -16,7 +16,7 @@ public class Nube {
         Nube = new Texture("nubedefondo.png");
         rand = new Random();
 
-        posLeftNube = new Vector2(0 - Nube.getWidth() / 2, rand.nextInt(5000));
+        posLeftNube = new Vector2(0 - Nube.getWidth() / 2, rand.nextInt(5000 - BattleJump.height) + BattleJump.height);
         posRightNube = new Vector2(BattleJump.width - Nube.getWidth() / 2, rand.nextInt(5000));
     }
 

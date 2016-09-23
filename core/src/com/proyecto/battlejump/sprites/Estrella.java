@@ -15,11 +15,11 @@ public class Estrella {
     private Vector2 estposition;
     private Random rand;
 
-    public Estrella() {
+    public Estrella(int yMin, int yMax) {
         estrella = new Texture("Estrella.png");
         rand = new Random();
 
-        estposition = new Vector2(rand.nextInt(BattleJump.width - estrella.getWidth()), rand.nextInt(BattleJump.height - estrella.getHeight()));
+        estposition = new Vector2(rand.nextInt(BattleJump.width), rand.nextInt(yMax - yMin) + yMin);
     }
 
     public Texture getEstrella() {
@@ -30,8 +30,8 @@ public class Estrella {
         return estposition;
     }
 
-    public void reposition(){
-        estposition.set(rand.nextInt(BattleJump.width - estrella.getWidth()), rand.nextInt(BattleJump.height - estrella.getHeight()));
+    public void reposition(int y){
+        estposition.set(rand.nextInt(BattleJump.width), y);
     }
 
     public void dispose(){
