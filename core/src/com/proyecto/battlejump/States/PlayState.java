@@ -37,10 +37,11 @@ public class PlayState extends State {
     private int comienzoNoche;
     float dia = 0;
     boolean espacio;
+    boolean existeatardecer;
     boolean existeEstrellas;
     boolean existeLuna;
-    boolean nocheCompleta;
-    float posLuna;
+    float posicionluna;
+    float movimientoluna;
     private Random rand;
 
     public PlayState(GameStateManager gsm) {
@@ -50,13 +51,13 @@ public class PlayState extends State {
         espacio = false;
         existeEstrellas = false;
         existeLuna = false;
-        posLuna = 0;
+        existeatardecer = false;
         fondo = new Texture("Fondo_Tierra-Cielo_Cielo.png");
         suelo = new Texture("Fondo_Tierra-Cielo_Pasto.png");
         atardecer = new Texture("Atardecer.png");
         space = new Texture("Fondo_Espacio_Fondo.png");
         luna = new Texture("Luna.png");
-        comienzoNoche  = comienzoAtardecer + atardecer.getHeight() + space.getHeight();
+        comienzoNoche  = comienzoAtardecer + atardecer.getHeight();
 
         platforms = new ArrayList<Plataform>();
         plataformasrotas = new ArrayList<BrokenPlatform>();
@@ -95,10 +96,17 @@ public class PlayState extends State {
         personaje.update(dt);
 
         if(personaje.getPosition().y > cam.position.y + 300 && personaje.getVelocity().y > 0){
-            if(espacio){
-                posLuna -= 1;
-            }
+            float camposanterior = cam.position.y;
             cam.position.y = personaje.getPosition().y - 300;
+            float campos = cam.position.y;
+            if(existeatardecer || espacio){
+                posicionluna += campos - camposanterior - 0.5;
+            }
+            if(espacio) {
+                for(Estrella star : estrellas) {
+                    star.getEstposition().y += campos - camposanterior;
+                }
+            }
             LeftNube.getPosLeftNube().y -= 2;
             RightNube.getPosRightNube().y -= 2;
         }
@@ -128,12 +136,6 @@ public class PlayState extends State {
             }
         }
 
-        for(Estrella star: estrellas) {
-            if (cam.position.y - (cam.viewportHeight / 2) > star.getEstposition().y) {
-                star.reposition(Math.round(cam.position.y + (cam.viewportHeight / 2)));
-            }
-        }
-
         if(cam.position.y - (cam.viewportHeight / 2) > LeftNube.getPosLeftNube().y + LeftNube.getNube().getHeight()){
             LeftNube.repositionLeft(Math.round(cam.position.y + (cam.viewportHeight / 2)));
         }
@@ -149,11 +151,9 @@ public class PlayState extends State {
         if(cam.position.y + (cam.viewportHeight / 2) >= comienzoAtardecer) {
             momento = 2;
         }
-        if(cam.position.y + (cam.viewportHeight / 2) >= comienzoNoche){
-            momento = 3;
-        }
         if(cam.position.y - (cam.viewportHeight / 2) >= comienzoNoche){
-            nocheCompleta = true;
+            momento = 3;
+            espacio = true;
         }
 
         if(espacio && !existeEstrellas){
@@ -161,6 +161,11 @@ public class PlayState extends State {
                 estrellas.add(new Estrella(Math.round(cam.position.y - (cam.viewportHeight / 2)), Math.round(cam.position.y + (cam.viewportHeight / 2))));
                 existeEstrellas = true;
             }
+        }
+
+        if(espacio && !existeLuna){
+            posicionluna = cam.position.y + (cam.viewportHeight / 2);
+            existeLuna = true;
         }
 
         cam.update();
@@ -180,19 +185,21 @@ public class PlayState extends State {
                 break;
             case 2:
                 sb.draw(fondo, 0, dia, BattleJump.width, BattleJump.height);
-                sb.draw(atardecer, 0, comienzoAtardecer, BattleJump.width, BattleJump.height);
-                sb.draw(space, 0, comienzoAtardecer + atardecer.getHeight(), BattleJump.width, BattleJump.height);
+                sb.draw(atardecer, 0, comienzoAtardecer, BattleJump.width, atardecer.getHeight());
+                sb.draw(space, 0, comienzoNoche, BattleJump.width, BattleJump.height);
+                sb.draw(luna, BattleJump.width - luna.getWidth() - 100, posicionluna, luna.getWidth(), luna.getHeight());
+                posicionluna += movimientoluna;
                 break;
             case 3:
-                if(nocheCompleta){
-                    sb.draw(space, 0, cam.position.y - (cam.viewportHeight / 2), BattleJump.width, BattleJump.height);
-                    for(Estrella star : estrellas){
-                        sb.draw(star.getEstrella(), star.getEstposition().x, star.getEstposition().y, star.getEstrella().getWidth(), star.getEstrella().getHeight());
-                    }
-                    sb.draw(luna, BattleJump.width - luna.getWidth() - 100, cam.position.y + (cam.viewportHeight / 2) - luna.getHeight() - 50 + posLuna, luna.getWidth(), luna.getHeight());
+                sb.draw(space, 0, cam.position.y - (cam.viewportHeight / 2), BattleJump.width, BattleJump.height);
+                for(Estrella star : estrellas){
+                    sb.draw(star.getEstrella(), star.getEstposition().x, star.getEstposition().y, star.getEstrella().getWidth(), star.getEstrella().getHeight());
                 }
+                sb.draw(luna, BattleJump.width - luna.getWidth() - 100, posicionluna, luna.getWidth(), luna.getHeight());
+                posicionluna += movimientoluna;
                 break;
         }
+        System.out.println(posicionluna);
 
         sb.draw(personaje.getPersonaje(), personaje.getPosition().x, personaje.getPosition().y);
         for(int i = 0; i < platforms.size(); i++){
