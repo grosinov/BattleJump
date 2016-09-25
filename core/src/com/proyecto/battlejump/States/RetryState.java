@@ -8,11 +8,16 @@ import com.proyecto.battlejump.BattleJump;
 public class RetryState extends State{
     private Texture fondo;
     private Texture fondo2;
+    private int HighScore = 0;
 
     public RetryState(GameStateManager gsm, int puntaje) {
         super(gsm);
         fondo = new Texture("Fondo_Tierra-Cielo_Cielo.png");
         fondo2 = new Texture("Fondo_Tierra-Cielo_Pasto.png");
+
+        if(puntaje > HighScore){
+            HighScore = puntaje;
+        }
     }
 
     @Override

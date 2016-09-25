@@ -19,6 +19,7 @@ public class PlayState extends State {
     private Texture suelo;
     private Texture atardecer;
     private Texture space;
+    private Texture sol;
     private Texture luna;
     private Speedy personaje;
 
@@ -40,9 +41,12 @@ public class PlayState extends State {
     boolean existeatardecer;
     boolean existeEstrellas;
     boolean existeLuna;
+    boolean existeSol;
     float posicionluna;
-    float movimientoluna;
+    float posicionSol;
     private Random rand;
+
+    private int puntaje;
 
     public PlayState(GameStateManager gsm) {
         super(gsm);
@@ -52,10 +56,12 @@ public class PlayState extends State {
         existeEstrellas = false;
         existeLuna = false;
         existeatardecer = false;
+        existeSol = false;
         fondo = new Texture("Fondo_Tierra-Cielo_Cielo.png");
         suelo = new Texture("Fondo_Tierra-Cielo_Pasto.png");
         atardecer = new Texture("Atardecer.png");
         space = new Texture("Fondo_Espacio_Fondo.png");
+        sol = new Texture("Sol.png");
         luna = new Texture("Luna.png");
         comienzoNoche  = comienzoAtardecer + atardecer.getHeight();
 
@@ -95,6 +101,13 @@ public class PlayState extends State {
         handleInput();
         personaje.update(dt);
 
+        puntaje = Math.round(personaje.getPosition().y);
+
+        if(!existeSol){
+            posicionSol = cam.position.y - (cam.viewportHeight / 2) - sol.getHeight() - 50;
+            existeSol = true;
+        }
+
         if(personaje.getPosition().y > cam.position.y + 300 && personaje.getVelocity().y > 0){
             float camposanterior = cam.position.y;
             cam.position.y = personaje.getPosition().y - 300;
@@ -102,6 +115,7 @@ public class PlayState extends State {
             if(existeatardecer || espacio){
                 posicionluna += campos - camposanterior - 0.5;
             }
+            posicionSol += campos - camposanterior - 0.5;
             if(espacio) {
                 for(Estrella star : estrellas) {
                     star.getEstposition().y += campos - camposanterior;
@@ -145,7 +159,7 @@ public class PlayState extends State {
         }
 
         if (cam.position.y - (cam.viewportHeight / 2) > personaje.getPosition().y + 50){
-            gsm.set(new PlayState(gsm));
+            gsm.set(new RetryState(gsm, puntaje));
         }
 
         if(cam.position.y + (cam.viewportHeight / 2) >= comienzoAtardecer) {
@@ -175,6 +189,7 @@ public class PlayState extends State {
     public void render(SpriteBatch sb) {
         sb.setProjectionMatrix(cam.combined);
         sb.begin();
+        sb.draw(sol, BattleJump.width - luna.getWidth() - 100, posicionSol);
         switch (momento){
             case 1:
                 sb.draw(fondo, 0, cam.position.y - (cam.viewportHeight / 2), BattleJump.width, BattleJump.height);
@@ -188,7 +203,6 @@ public class PlayState extends State {
                 sb.draw(atardecer, 0, comienzoAtardecer, BattleJump.width, atardecer.getHeight());
                 sb.draw(space, 0, comienzoNoche, BattleJump.width, BattleJump.height);
                 sb.draw(luna, BattleJump.width - luna.getWidth() - 100, posicionluna, luna.getWidth(), luna.getHeight());
-                posicionluna += movimientoluna;
                 break;
             case 3:
                 sb.draw(space, 0, cam.position.y - (cam.viewportHeight / 2), BattleJump.width, BattleJump.height);
@@ -196,7 +210,6 @@ public class PlayState extends State {
                     sb.draw(star.getEstrella(), star.getEstposition().x, star.getEstposition().y, star.getEstrella().getWidth(), star.getEstrella().getHeight());
                 }
                 sb.draw(luna, BattleJump.width - luna.getWidth() - 100, posicionluna, luna.getWidth(), luna.getHeight());
-                posicionluna += movimientoluna;
                 break;
         }
         System.out.println(posicionluna);
