@@ -61,7 +61,7 @@ public class PlayState extends State {
         suelo = new Texture("Fondo_Tierra-Cielo_Pasto.png");
         atardecer = new Texture("Atardecer.png");
         space = new Texture("Fondo_Espacio_Fondo.png");
-        sol = new Texture("Sol.png");
+        //sol = new Texture("Sol.png");
         luna = new Texture("Luna.png");
         comienzoNoche  = comienzoAtardecer + atardecer.getHeight();
 
@@ -103,10 +103,10 @@ public class PlayState extends State {
 
         puntaje = Math.round(personaje.getPosition().y);
 
-        if(!existeSol){
+        /*if(!existeSol){
             posicionSol = cam.position.y - (cam.viewportHeight / 2) - sol.getHeight() - 50;
             existeSol = true;
-        }
+        }*/
 
         if(personaje.getPosition().y > cam.position.y + 300 && personaje.getVelocity().y > 0){
             float camposanterior = cam.position.y;
@@ -115,7 +115,7 @@ public class PlayState extends State {
             if(existeatardecer || espacio){
                 posicionluna += campos - camposanterior - 0.5;
             }
-            posicionSol += campos - camposanterior - 0.5;
+            //posicionSol += campos - camposanterior - 0.5;
             if(espacio) {
                 for(Estrella star : estrellas) {
                     star.getEstposition().y += campos - camposanterior;
@@ -189,7 +189,7 @@ public class PlayState extends State {
     public void render(SpriteBatch sb) {
         sb.setProjectionMatrix(cam.combined);
         sb.begin();
-        sb.draw(sol, BattleJump.width - luna.getWidth() - 100, posicionSol);
+        //sb.draw(sol, BattleJump.width - luna.getWidth() - 100, posicionSol);
         switch (momento){
             case 1:
                 sb.draw(fondo, 0, cam.position.y - (cam.viewportHeight / 2), BattleJump.width, BattleJump.height);
@@ -212,7 +212,6 @@ public class PlayState extends State {
                 sb.draw(luna, BattleJump.width - luna.getWidth() - 100, posicionluna, luna.getWidth(), luna.getHeight());
                 break;
         }
-        System.out.println(posicionluna);
 
         sb.draw(personaje.getPersonaje(), personaje.getPosition().x, personaje.getPosition().y);
         for(int i = 0; i < platforms.size(); i++){
