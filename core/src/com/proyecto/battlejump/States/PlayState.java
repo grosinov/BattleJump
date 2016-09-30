@@ -8,6 +8,7 @@ import com.proyecto.battlejump.sprites.Burbuja;
 import com.proyecto.battlejump.sprites.Estrella;
 import com.proyecto.battlejump.sprites.Nube;
 import com.proyecto.battlejump.sprites.Plataforms.BrokenPlatform;
+import com.proyecto.battlejump.sprites.Plataforms.PinchePlatform;
 import com.proyecto.battlejump.sprites.Plataforms.Plataform;
 import com.proyecto.battlejump.sprites.Speedy;
 
@@ -25,6 +26,7 @@ public class PlayState extends State {
 
     private ArrayList<Plataform> platforms;
     private ArrayList<BrokenPlatform> plataformasrotas;
+    private ArrayList<PinchePlatform> plataformaspinche;
     private  ArrayList<Estrella> estrellas;
     Nube LeftNube;
     Nube RightNube;
@@ -34,6 +36,7 @@ public class PlayState extends State {
     private int yPlatPos = 0;
     private int cantplat = 20;
     private int platRotaPos;
+    private int platpinchepos;
     private int comienzoAtardecer = 10000;
     private int comienzoNoche;
     float dia = 0;
@@ -67,13 +70,23 @@ public class PlayState extends State {
 
         platforms = new ArrayList<Plataform>();
         plataformasrotas = new ArrayList<BrokenPlatform>();
+        plataformaspinche = new ArrayList<PinchePlatform>();
         estrellas = new ArrayList<Estrella>();
 
         rand = new Random();
         platRotaPos = rand.nextInt(cantplat);
+        platpinchepos = rand.nextInt(cantplat);
+        if(platRotaPos == platpinchepos){
+            while(platRotaPos == platpinchepos){
+                platpinchepos = rand.nextInt(cantplat);
+            }
+        }
+
         for(int i = 1; i <= cantplat; i++){
             if(i == platRotaPos){
                 plataformasrotas.add(new BrokenPlatform(yPlatPos));
+            } else if (i == platpinchepos){
+                plataformaspinche.add(new PinchePlatform(yPlatPos));
             } else {
                 platforms.add(new Plataform(yPlatPos));
             }
@@ -147,6 +160,17 @@ public class PlayState extends State {
                 plataformasrotas.remove(brplat);
                 plataformasrotas.add(new BrokenPlatform(yPlatPos));
                 yPlatPos += 150;
+            }
+        }
+
+        for(PinchePlatform pncplat : plataformaspinche) {
+            if (cam.position.y - (cam.viewportHeight / 2) > pncplat.getPosplataforma().y) {
+                pncplat.reposition(yPlatPos);
+                yPlatPos += 150;
+            }
+
+            if(pncplat.collides(personaje.getPlayerCollision()) && personaje.getVelocity().y <= 0){
+                gsm.set(new RetryState(gsm, puntaje, cam.position.y));
             }
         }
 
@@ -225,6 +249,13 @@ public class PlayState extends State {
                 sb.draw(brplat.getPlatRota(), brplat.getPosplataforma().x, brplat.getPosplataforma().y);
             }
         }
+
+        for(int i = 0; i < plataformaspinche.size(); i++){
+            if(plataformaspinche.get(i) != null){
+                PinchePlatform pncplat = plataformaspinche.get(i);
+                sb.draw(pncplat.getPlatPinches(), pncplat.getPosplataforma().x, pncplat.getPosplataforma().y);
+            }
+        }
         sb.end();
     }
 
@@ -236,6 +267,12 @@ public class PlayState extends State {
         personaje.dispose();
         for(Plataform plat : platforms){
             plat.dispose();
+        }
+        for(BrokenPlatform brplat : plataformasrotas){
+            brplat.dispose();
+        }
+        for(PinchePlatform pncplat: plataformaspinche){
+            pncplat.dispose();
         }
         LeftNube.dispose();
         RightNube.dispose();
