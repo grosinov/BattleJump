@@ -159,7 +159,7 @@ public class PlayState extends State {
         }
 
         if (cam.position.y - (cam.viewportHeight / 2) > personaje.getPosition().y + 50){
-            gsm.set(new RetryState(gsm, puntaje));
+            gsm.set(new RetryState(gsm, puntaje, cam.position.y));
         }
 
         if(cam.position.y + (cam.viewportHeight / 2) >= comienzoAtardecer) {
