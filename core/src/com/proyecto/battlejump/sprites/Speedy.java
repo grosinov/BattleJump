@@ -8,7 +8,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.proyecto.battlejump.BattleJump;
 
 public class Speedy {
-    private static final int gravity = -15;
+    private static final int gravity = -20;
     private Vector3 position;
     private Vector3 velocity;
     private Rectangle playerCollision;
@@ -19,7 +19,7 @@ public class Speedy {
         position = new Vector3(x, y, 0);
         velocity = new Vector3(0, 0, 0);
         personaje = new Texture("personaje.png");
-        playerCollision = new Rectangle(x, y, personaje.getWidth(), 2);
+        playerCollision = new Rectangle(x, y, responsiveX(personaje), (BattleJump.height * 2) / 2560);
     }
 
     public void update(float dt){
@@ -41,21 +41,21 @@ public class Speedy {
     public Vector3 getVelocity() { return velocity; }
 
     public void moveLeft(){
-        position.x -= 10;
+        position.x -= (BattleJump.width * 9) / 1440;
         if(position.x < 0 - personaje.getWidth()){
             position.x = BattleJump.width;
         }
     }
 
     public void moveRight(){
-        position.x += 10;
+        position.x += (BattleJump.width * 9) / 1440;
         if(position.x > BattleJump.width){
-            position.x = 0;
+            position.x = 0 - personaje.getWidth();
         }
     }
 
     public void jump(){
-        velocity.y = 1000;
+        velocity.y = (BattleJump.height * 1200) / 2560;;
     }
 
     public Rectangle getPlayerCollision(){
@@ -64,5 +64,17 @@ public class Speedy {
 
     public void dispose(){
         personaje.dispose();
+    }
+
+    public int responsiveX (Texture textura){
+        int tamañoX = 0;
+        tamañoX = (BattleJump.width * textura.getWidth()) / 1440;
+        return tamañoX;
+    }
+
+    public int responsiveY (Texture textura){
+        int tamañoY = 0;
+        tamañoY = (BattleJump.height * textura.getHeight()) / 2560;
+        return tamañoY;
     }
 }

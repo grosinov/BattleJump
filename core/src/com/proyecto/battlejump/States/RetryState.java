@@ -13,12 +13,12 @@ public class RetryState extends State implements Input.TextInputListener{
     private Texture fondo;
     private Texture fondo2;
     private String perdio = "Has perdido!";
-    private BitmapFont perdiotext;
-    private BitmapFont puntajetext;
-    private BitmapFont highscoretext;
     private float campos = 0;
     private int puntaje = 0;
 
+    private BitmapFont perdiotext;
+    private BitmapFont puntajetext;
+    private BitmapFont highscoretext;
     GlyphLayout perdioLayout;
     GlyphLayout puntajeLayout;
     GlyphLayout highscoreLayout;
@@ -64,7 +64,7 @@ public class RetryState extends State implements Input.TextInputListener{
         highscoretext.getData().setScale(5, 5);
 
         perdioLayout.setText(perdiotext, perdio);
-        puntajeLayout.setText(perdiotext, "Tu puntaje final es: " + String.valueOf(puntaje));
+        puntajeLayout.setText(puntajetext, "Tu puntaje final es: " + String.valueOf(puntaje));
         highscoreLayout.setText(highscoretext, "Mayor puntaje: " + String.valueOf(HighScore));
 
         perdioWidth = perdioLayout.width;
