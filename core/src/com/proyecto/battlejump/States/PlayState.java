@@ -224,8 +224,8 @@ public class PlayState extends State {
                 break;
             case 2:
                 sb.draw(fondo, 0, dia, BattleJump.width, BattleJump.height);
-                sb.draw(atardecer, 0, comienzoAtardecer, BattleJump.width, atardecer.getHeight());
-                sb.draw(space, 0, comienzoNoche, BattleJump.width, BattleJump.height);
+                sb.draw(atardecer, 0, comienzoAtardecer-1, BattleJump.width, atardecer.getHeight());
+                sb.draw(space, 0, comienzoNoche-1, BattleJump.width, BattleJump.height);
                 sb.draw(luna, BattleJump.width - luna.getWidth() - 100, posicionluna, luna.getWidth(), luna.getHeight());
                 break;
             case 3:
