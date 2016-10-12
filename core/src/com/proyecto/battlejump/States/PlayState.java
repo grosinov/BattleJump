@@ -23,7 +23,7 @@ public class PlayState extends State {
     private Texture suelo;
     private Texture atardecer;
     private Texture space;
-    private Texture sol;
+    //private Texture sol;
     private Texture luna;
     private Speedy personaje;
 
@@ -48,10 +48,10 @@ public class PlayState extends State {
     boolean existeatardecer;
     boolean existeEstrellas;
     boolean existeLuna;
-    boolean existeSol;
+    //boolean existeSol;
     int dificultad;
     float posicionluna;
-    float posicionSol;
+    //float posicionSol;
     private Random rand;
 
     private int puntaje;
@@ -71,13 +71,13 @@ public class PlayState extends State {
         existeEstrellas = false;
         existeLuna = false;
         existeatardecer = false;
-        existeSol = false;
+        //existeSol = false;
         dificultad = 0;
         fondo = new Texture("Fondo_Tierra-Cielo_Cielo.png");
         suelo = new Texture("Fondo_Tierra-Cielo_Pasto.png");
         atardecer = new Texture("Atardecer.png");
         space = new Texture("Fondo_Espacio_Fondo.png");
-        sol = new Texture("Luna.png");
+        //sol = new Texture("Luna.png");
         luna = new Texture("Luna.png");
         comienzoNoche  = comienzoAtardecer + atardecer.getHeight();
 
@@ -131,10 +131,10 @@ public class PlayState extends State {
         puntajeLayout.setText(puntajetext, String.valueOf(puntaje));
         puntajeHeight = puntajeLayout.height;
 
-        if(!existeSol){
+        /*if(!existeSol){
             posicionSol = cam.position.y - (cam.viewportHeight / 2) - sol.getHeight() - 50;
             existeSol = true;
-        }
+        }*/
 
         if(momento == 2 && dificultad == 0){
             platSpace += responsiveY(50);
@@ -154,10 +154,10 @@ public class PlayState extends State {
             cam.position.y = personaje.getPosition().y - responsiveY(300);
             float campos = cam.position.y;
             if(existeatardecer){
-                posicionluna += campos - camposanterior - responsiveY(1);
+                posicionluna += campos - camposanterior - 0.5;
             }
             puntaje = Math.round(personaje.getPosition().y / 10);
-            posicionSol += campos - camposanterior - responsiveY(1);
+            //posicionSol += campos - camposanterior - responsiveY(1);
             if(espacio) {
                 for(Estrella star : estrellas) {
                     star.getEstposition().y += campos - camposanterior;
@@ -246,7 +246,7 @@ public class PlayState extends State {
     public void render(SpriteBatch sb) {
         sb.setProjectionMatrix(cam.combined);
         sb.begin();
-        sb.draw(sol, BattleJump.width - sol.getWidth() - responsiveX(100), posicionSol);
+        //sb.draw(sol, BattleJump.width - sol.getWidth() - responsiveX(100), posicionSol);
         switch (momento){
             case 1:
                 sb.draw(fondo, 0, cam.position.y - (cam.viewportHeight / 2), BattleJump.width, BattleJump.height);
