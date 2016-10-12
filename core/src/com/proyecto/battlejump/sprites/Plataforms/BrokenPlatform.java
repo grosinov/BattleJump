@@ -14,10 +14,6 @@ public class BrokenPlatform extends Plataform{
         super(y);
         platRota = new Texture("Plataforma_Rota.png");
         rand = new Random();
-
-        posplataforma = new Vector2(rand.nextInt(BattleJump.width - platRota.getWidth()), y);
-
-        platcollision = new Rectangle(posplataforma.x, posplataforma.y, platRota.getWidth(), platRota.getHeight());
     }
 
     public Texture getPlatRota() {

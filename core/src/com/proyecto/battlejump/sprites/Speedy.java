@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.proyecto.battlejump.BattleJump;
+import com.proyecto.battlejump.States.PlayState;
 
 public class Speedy {
     private static final int gravity = -20;
@@ -19,7 +20,7 @@ public class Speedy {
         position = new Vector3(x, y, 0);
         velocity = new Vector3(0, 0, 0);
         personaje = new Texture("personaje.png");
-        playerCollision = new Rectangle(x, y, responsiveX(personaje), (BattleJump.height * 2) / 2560);
+        playerCollision = new Rectangle(x, y, responsiveX(personaje.getWidth()), (responsiveY(personaje.getHeight()) * 2) / personaje.getHeight());
     }
 
     public void update(float dt){
@@ -34,28 +35,28 @@ public class Speedy {
         return position;
     }
 
-        public Texture getPersonaje() {
+    public Texture getPersonaje() {
             return personaje;
         }
 
     public Vector3 getVelocity() { return velocity; }
 
     public void moveLeft(){
-        position.x -= (BattleJump.width * 9) / 1440;
+        position.x -= responsiveX(9);
         if(position.x < 0 - personaje.getWidth()){
             position.x = BattleJump.width;
         }
     }
 
     public void moveRight(){
-        position.x += (BattleJump.width * 9) / 1440;
+        position.x += responsiveX(9);
         if(position.x > BattleJump.width){
             position.x = 0 - personaje.getWidth();
         }
     }
 
     public void jump(){
-        velocity.y = (BattleJump.height * 1200) / 2560;;
+        velocity.y = responsiveY(1200);
     }
 
     public Rectangle getPlayerCollision(){
@@ -66,15 +67,15 @@ public class Speedy {
         personaje.dispose();
     }
 
-    public int responsiveX (Texture textura){
+    public int responsiveX (int tamaño){
         int tamañoX = 0;
-        tamañoX = (BattleJump.width * textura.getWidth()) / 1440;
+        tamañoX = (BattleJump.width * tamaño) / 1440;
         return tamañoX;
     }
 
-    public int responsiveY (Texture textura){
+    public int responsiveY (int tamaño){
         int tamañoY = 0;
-        tamañoY = (BattleJump.height * textura.getHeight()) / 2560;
+        tamañoY = (BattleJump.height * tamaño) / 2560;
         return tamañoY;
     }
 }

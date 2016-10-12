@@ -17,8 +17,6 @@ public class PinchePlatform extends Plataform{
         rand = new Random();
 
         posplataforma = new Vector2(rand.nextInt(BattleJump.width - platPinches.getWidth()), y);
-
-        platcollision = new Rectangle(posplataforma.x, posplataforma.y, platPinches.getWidth(), platPinches.getHeight());
     }
 
     public Texture getPlatPinches() {

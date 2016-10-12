@@ -37,11 +37,11 @@ public class PlayState extends State {
     int momento = 1;
 
     private int yPlatPos = 0;
-    private int platSpace = 200;
+    private int platSpace = responsiveY(200);
     private int cantplat = 15;
     private int platRotaPos;
     private int platpinchepos;
-    private int comienzoAtardecer = 10000;
+    private int comienzoAtardecer = responsiveY(9993);
     private int comienzoNoche;
     float dia = 0;
     boolean espacio;
@@ -49,7 +49,7 @@ public class PlayState extends State {
     boolean existeEstrellas;
     boolean existeLuna;
     boolean existeSol;
-    boolean dificultadAumentada;
+    int dificultad;
     float posicionluna;
     float posicionSol;
     private Random rand;
@@ -58,10 +58,6 @@ public class PlayState extends State {
     private BitmapFont puntajetext;
     GlyphLayout puntajeLayout;
     float puntajeHeight;
-
-    int posicionArray = 0;
-    boolean result;
-    Iterator<BrokenPlatform> it;
 
     public PlayState(GameStateManager gsm) {
         super(gsm);
@@ -76,12 +72,12 @@ public class PlayState extends State {
         existeLuna = false;
         existeatardecer = false;
         existeSol = false;
-        dificultadAumentada = false;
+        dificultad = 0;
         fondo = new Texture("Fondo_Tierra-Cielo_Cielo.png");
         suelo = new Texture("Fondo_Tierra-Cielo_Pasto.png");
         atardecer = new Texture("Atardecer.png");
         space = new Texture("Fondo_Espacio_Fondo.png");
-        //sol = new Texture("Sol.png");
+        sol = new Texture("Luna.png");
         luna = new Texture("Luna.png");
         comienzoNoche  = comienzoAtardecer + atardecer.getHeight();
 
@@ -135,39 +131,40 @@ public class PlayState extends State {
         puntajeLayout.setText(puntajetext, String.valueOf(puntaje));
         puntajeHeight = puntajeLayout.height;
 
-        /*if(!existeSol){
+        if(!existeSol){
             posicionSol = cam.position.y - (cam.viewportHeight / 2) - sol.getHeight() - 50;
             existeSol = true;
-        }*/
+        }
 
-        if(momento == 2 && !dificultadAumentada){
-            platSpace += 50;
+        if(momento == 2 && dificultad == 0){
+            platSpace += responsiveY(50);
             plataformasrotas.add(new BrokenPlatform(yPlatPos));
             yPlatPos += platSpace;
-            dificultadAumentada = true;
+            dificultad = 1;
         }
 
-        if(personaje.getPosition().y == comienzoNoche){
+        if(personaje.getPosition().y == comienzoNoche && dificultad == 1){
             plataformaspinche.add(new PinchePlatform(yPlatPos));
             yPlatPos += platSpace;
+            dificultad = 2;
         }
 
-        if(personaje.getPosition().y > cam.position.y + 300 && personaje.getVelocity().y > 0){
+        if(personaje.getPosition().y > cam.position.y + responsiveY(300) && personaje.getVelocity().y > 0){
             float camposanterior = cam.position.y;
-            cam.position.y = personaje.getPosition().y - 300;
+            cam.position.y = personaje.getPosition().y - responsiveY(300);
             float campos = cam.position.y;
-            if(existeatardecer || espacio){
-                posicionluna += campos - camposanterior - 0.5;
+            if(existeatardecer){
+                posicionluna += campos - camposanterior - responsiveY(1);
             }
             puntaje = Math.round(personaje.getPosition().y / 10);
-            //posicionSol += campos - camposanterior - 0.5;
+            posicionSol += campos - camposanterior - responsiveY(1);
             if(espacio) {
                 for(Estrella star : estrellas) {
                     star.getEstposition().y += campos - camposanterior;
                 }
             }
-            LeftNube.getPosLeftNube().y -= 2;
-            RightNube.getPosRightNube().y -= 2;
+            LeftNube.getPosLeftNube().y -= responsiveY(2);
+            RightNube.getPosRightNube().y -= responsiveY(2);
         }
 
         for(Plataform plat : platforms){
@@ -181,29 +178,20 @@ public class PlayState extends State {
             }
         }
 
-        it = new Iterator<BrokenPlatform>() {
-            @Override
-            public boolean hasNext() {
-                return false;
-            }
+        for(int i = 0; i < plataformasrotas.size(); i++) {
+            Plataform brplat = plataformasrotas.get(i);
+            if (brplat != null){
+                if (cam.position.y - (cam.viewportHeight / 2) > brplat.getPosplataforma().y) {
+                    brplat.reposition(yPlatPos);
+                    yPlatPos += platSpace;
+                }
 
-            @Override
-            public BrokenPlatform next() {
-                return null;
-            }
-        };
-        while(it.hasNext()){
-
-            if (cam.position.y - (cam.viewportHeight / 2) > it.next().getPosplataforma().y) {
-                it.next().reposition(yPlatPos);
-                yPlatPos += platSpace;
-            }
-
-            if(it.next().collides(personaje.getPlayerCollision()) && personaje.getVelocity().y <= 0){
-                personaje.jump();
-                plataformasrotas.remove(it.next());
-                plataformasrotas.add(new BrokenPlatform(yPlatPos));
-                yPlatPos += platSpace;
+                if(brplat.collides(personaje.getPlayerCollision()) && personaje.getVelocity().y <= 0){
+                    personaje.jump();
+                    plataformasrotas.remove(brplat);
+                    plataformasrotas.add(new BrokenPlatform(yPlatPos));
+                    yPlatPos += platSpace;
+                }
             }
         }
 
@@ -226,16 +214,17 @@ public class PlayState extends State {
             RightNube.repositionRight(Math.round(cam.position.y + (cam.viewportHeight / 2)));
         }
 
-        if (cam.position.y - (cam.viewportHeight / 2) > personaje.getPosition().y + 50){
+        if (cam.position.y - (cam.viewportHeight / 2) > personaje.getPosition().y + responsiveY(50)){
             gsm.set(new RetryState(gsm, puntaje, cam.position.y));
         }
 
         if(cam.position.y + (cam.viewportHeight / 2) >= comienzoAtardecer) {
             momento = 2;
+            espacio = true;
+            existeatardecer = true;
         }
         if(cam.position.y - (cam.viewportHeight / 2) >= comienzoNoche){
             momento = 3;
-            espacio = true;
         }
 
         if(espacio && !existeEstrellas){
@@ -257,47 +246,48 @@ public class PlayState extends State {
     public void render(SpriteBatch sb) {
         sb.setProjectionMatrix(cam.combined);
         sb.begin();
-        //sb.draw(sol, BattleJump.width - sol.getWidth() - 100, posicionSol);
+        sb.draw(sol, BattleJump.width - sol.getWidth() - responsiveX(100), posicionSol);
         switch (momento){
             case 1:
                 sb.draw(fondo, 0, cam.position.y - (cam.viewportHeight / 2), BattleJump.width, BattleJump.height);
                 sb.draw(suelo, 0, 0, BattleJump.width, BattleJump.height);
-                sb.draw(LeftNube.getNube(), LeftNube.getPosLeftNube().x, LeftNube.getPosLeftNube().y);
-                sb.draw(RightNube.getNube(), RightNube.getPosRightNube().x, RightNube.getPosRightNube().y);
+                sb.draw(LeftNube.getNube(), LeftNube.getPosLeftNube().x, LeftNube.getPosLeftNube().y, responsiveX(LeftNube.getNube().getWidth()), responsiveY(LeftNube.getNube().getHeight()));
+                sb.draw(RightNube.getNube(), RightNube.getPosRightNube().x, RightNube.getPosRightNube().y, responsiveX(RightNube.getNube().getWidth()), responsiveY(RightNube.getNube().getHeight()));
                 dia = cam.position.y - (cam.viewportHeight / 2);
                 break;
             case 2:
                 sb.draw(fondo, 0, dia, BattleJump.width, BattleJump.height);
-                sb.draw(atardecer, 0, comienzoAtardecer - 10, BattleJump.width, atardecer.getHeight());
-                sb.draw(space, 0, comienzoNoche-11, BattleJump.width, BattleJump.height);
-                sb.draw(luna, BattleJump.width - luna.getWidth() - 100, posicionluna, luna.getWidth(), luna.getHeight());
+                sb.draw(atardecer, 0, comienzoAtardecer, BattleJump.width, atardecer.getHeight());
+                sb.draw(space, 0, comienzoNoche, BattleJump.width, BattleJump.height);
+                sb.draw(luna, BattleJump.width - luna.getWidth() - responsiveX(100), posicionluna, responsiveX(luna.getWidth()), responsiveY(luna.getHeight()));
                 break;
             case 3:
                 sb.draw(space, 0, cam.position.y - (cam.viewportHeight / 2), BattleJump.width, BattleJump.height);
                 for(Estrella star : estrellas){
-                    sb.draw(star.getEstrella(), star.getEstposition().x, star.getEstposition().y, star.getEstrella().getWidth(), star.getEstrella().getHeight());
+                    sb.draw(star.getEstrella(), star.getEstposition().x, star.getEstposition().y,responsiveX(star.getEstrella().getWidth()), responsiveY(star.getEstrella().getHeight()));
                 }
-                sb.draw(luna, BattleJump.width - luna.getWidth() - 100, posicionluna, luna.getWidth(), luna.getHeight());
+                sb.draw(luna, BattleJump.width - luna.getWidth() - luna.getWidth() / 2, posicionluna, responsiveX(luna.getWidth()), responsiveY(luna.getHeight()));
                 break;
         }
 
-        sb.draw(personaje.getPersonaje(), personaje.getPosition().x, personaje.getPosition().y);
+        sb.draw(personaje.getPersonaje(), personaje.getPosition().x, personaje.getPosition().y, personaje.responsiveX(personaje.getPersonaje().getWidth()), personaje.responsiveY(personaje.getPersonaje().getHeight()));
+
         for(int i = 0; i < platforms.size(); i++){
             Plataform plat = platforms.get(i);
-            sb.draw(plat.getPlataforma(), plat.getPosplataforma().x, plat.getPosplataforma().y);
+            sb.draw(plat.getPlataforma(), plat.getPosplataforma().x, plat.getPosplataforma().y, plat.responsiveX(plat.getPlataforma()), plat.responsiveY(plat.getPlataforma()));
         }
 
         for(int i = 0; i < plataformasrotas.size(); i++){
             if(plataformasrotas.get(i) != null){
                 BrokenPlatform brplat = plataformasrotas.get(i);
-                sb.draw(brplat.getPlatRota(), brplat.getPosplataforma().x, brplat.getPosplataforma().y);
+                sb.draw(brplat.getPlatRota(), brplat.getPosplataforma().x, brplat.getPosplataforma().y, brplat.responsiveX(brplat.getPlatRota()), brplat.responsiveY(brplat.getPlatRota()));
             }
         }
 
         for(int i = 0; i < plataformaspinche.size(); i++){
             if(plataformaspinche.get(i) != null){
                 PinchePlatform pncplat = plataformaspinche.get(i);
-                sb.draw(pncplat.getPlatPinches(), pncplat.getPosplataforma().x, pncplat.getPosplataforma().y);
+                sb.draw(pncplat.getPlatPinches(), pncplat.getPosplataforma().x, pncplat.getPosplataforma().y, pncplat.responsiveX(pncplat.getPlatPinches()), pncplat.responsiveY(pncplat.getPlatPinches()));
             }
         }
 
@@ -326,5 +316,17 @@ public class PlayState extends State {
         for(Estrella star : estrellas){
             star.dispose();
         }
+    }
+
+    public int responsiveX (int tamaño){
+        int tamañoX;
+        tamañoX = (BattleJump.width * tamaño) / 1440;
+        return tamañoX;
+    }
+
+    public int responsiveY (int tamaño){
+        int tamañoY;
+        tamañoY = (BattleJump.height * tamaño) / 2560;
+        return tamañoY;
     }
 }
