@@ -32,6 +32,7 @@ public class Speedy {
         position.add(0, velocity.y, 0);
         velocity.scl(1/dt);
         playerCollision.setPosition(position.x, position.y);
+        colisionPoder.setPosition(position.x, position.y);
     }
 
     public Vector3 getPosition() {

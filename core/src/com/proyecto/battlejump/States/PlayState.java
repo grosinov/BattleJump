@@ -111,6 +111,7 @@ public class PlayState extends State {
             yPlatPos += platSpace;
         }
 
+
         LeftNube = new Nube();
         RightNube = new Nube();
     }
@@ -228,11 +229,11 @@ public class PlayState extends State {
             burbuja.reposition(Math .round(cam.position.y + (cam.viewportHeight / 2)));
         }
 
-        if(cam.position.y - (cam.viewportHeight / 2) > LeftNube.getPosLeftNube().y + LeftNube.getNube().getHeight()){
+        if(cam.position.y - (cam.viewportHeight / 2) > LeftNube.getPosLeftNube().y + LeftNube.getNube().getHeight() && !existeatardecer){
             LeftNube.repositionLeft(Math.round(cam.position.y + (cam.viewportHeight / 2)));
         }
 
-        if(cam.position.y - (cam.viewportHeight / 2) > RightNube.getPosRightNube().y + RightNube.getNube().getHeight()){
+        if(cam.position.y - (cam.viewportHeight / 2) > RightNube.getPosRightNube().y + RightNube.getNube().getHeight() && !existeatardecer){
             RightNube.repositionRight(Math.round(cam.position.y + (cam.viewportHeight / 2)));
         }
 
@@ -281,6 +282,8 @@ public class PlayState extends State {
                 sb.draw(fondo, 0, dia, BattleJump.width, BattleJump.height);
                 sb.draw(atardecer, 0, comienzoAtardecer, BattleJump.width, atardecer.getHeight());
                 sb.draw(space, 0, comienzoNoche, BattleJump.width, BattleJump.height);
+                sb.draw(LeftNube.getNube(), LeftNube.getPosLeftNube().x, LeftNube.getPosLeftNube().y, responsiveX(LeftNube.getNube().getWidth()), responsiveY(LeftNube.getNube().getHeight()));
+                sb.draw(RightNube.getNube(), RightNube.getPosRightNube().x, RightNube.getPosRightNube().y, responsiveX(RightNube.getNube().getWidth()), responsiveY(RightNube.getNube().getHeight()));
                 sb.draw(luna, BattleJump.width - luna.getWidth() - responsiveX(100), posicionluna, responsiveX(luna.getWidth()), responsiveY(luna.getHeight()));
                 break;
             case 3:
