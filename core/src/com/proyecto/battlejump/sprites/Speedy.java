@@ -5,22 +5,25 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.Timer;
 import com.proyecto.battlejump.BattleJump;
 import com.proyecto.battlejump.States.PlayState;
 
 public class Speedy {
     private static final int gravity = -20;
     private Vector3 position;
-    private Vector3 velocity;
+    protected Vector3 velocity;
     private Rectangle playerCollision;
+    private Rectangle colisionPoder;
 
     private Texture personaje;
 
-    public Speedy(int x, int y){
+    public Speedy(float x, float y){
         position = new Vector3(x, y, 0);
         velocity = new Vector3(0, 0, 0);
         personaje = new Texture("personaje.png");
         playerCollision = new Rectangle(x, y, responsiveX(personaje.getWidth()), (responsiveY(personaje.getHeight()) * 2) / personaje.getHeight());
+        colisionPoder = new Rectangle(x, y, responsiveX(personaje.getWidth()), responsiveY(personaje.getHeight()));
     }
 
     public void update(float dt){
@@ -55,6 +58,17 @@ public class Speedy {
         }
     }
 
+    public void burbuja(){
+        personaje = null;
+        personaje = new Texture("burbuja.png");
+        velocity.y = responsiveY(2500);
+    }
+
+    public void normal(){
+        personaje = null;
+        personaje = new Texture("personaje.png");
+    }
+
     public void jump(){
         velocity.y = responsiveY(1200);
     }
@@ -63,18 +77,22 @@ public class Speedy {
         return playerCollision;
     }
 
+    public Rectangle getPlayerCollisionPoder(){
+        return colisionPoder;
+    }
+
     public void dispose(){
         personaje.dispose();
     }
 
     public int responsiveX (int tamaño){
-        int tamañoX = 0;
+        int tamañoX;
         tamañoX = (BattleJump.width * tamaño) / 1440;
         return tamañoX;
     }
 
     public int responsiveY (int tamaño){
-        int tamañoY = 0;
+        int tamañoY;
         tamañoY = (BattleJump.height * tamaño) / 2560;
         return tamañoY;
     }

@@ -14,11 +14,11 @@ public class Burbuja{
 
     Random rand;
 
-    public Burbuja(int topCam) {
+    public Burbuja() {
         rand = new Random();
 
-        burbuja = new Texture("");
-        posburbuja = new Vector2(rand.nextInt(BattleJump.width- burbuja.getWidth()) , rand.nextInt(topCam + 4000 - topCam) + topCam);
+        burbuja = new Texture("burbuja.png");
+        posburbuja = new Vector2(rand.nextInt(BattleJump.width- burbuja.getWidth()) , rand.nextInt(BattleJump.height));
 
         burcollision = new Rectangle(posburbuja.x, posburbuja.y, burbuja.getWidth(), burbuja.getHeight());
     }
@@ -32,7 +32,7 @@ public class Burbuja{
     }
 
     public void reposition(int topCam){
-        posburbuja.set(rand.nextInt(BattleJump.width- burbuja.getWidth()) , rand.nextInt(topCam + 4000 - topCam) + topCam);
+        posburbuja.set(rand.nextInt(BattleJump.width- burbuja.getWidth()) , rand.nextInt(topCam + responsiveY(10000) - topCam) + topCam);
         burcollision.setPosition(posburbuja.x, posburbuja.y);
     }
 
@@ -42,5 +42,11 @@ public class Burbuja{
 
     public void dispose(){
         burbuja.dispose();
+    }
+
+    public int responsiveY (int tamaño){
+        int tamañoY;
+        tamañoY = (BattleJump.height * tamaño) / 2560;
+        return tamañoY;
     }
 }

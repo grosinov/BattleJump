@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.utils.Timer;
 import com.proyecto.battlejump.BattleJump;
 import com.proyecto.battlejump.sprites.Burbuja;
 import com.proyecto.battlejump.sprites.Estrella;
@@ -15,7 +16,6 @@ import com.proyecto.battlejump.sprites.Plataforms.Plataform;
 import com.proyecto.battlejump.sprites.Speedy;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Random;
 
 public class PlayState extends State {
@@ -26,6 +26,7 @@ public class PlayState extends State {
     //private Texture sol;
     private Texture luna;
     private Speedy personaje;
+    float proximaposicion;
 
     private ArrayList<Plataform> platforms;
     private ArrayList<BrokenPlatform> plataformasrotas;
@@ -41,7 +42,7 @@ public class PlayState extends State {
     private int cantplat = 15;
     private int platRotaPos;
     private int platpinchepos;
-    private int comienzoAtardecer = responsiveY(9993);
+    private int comienzoAtardecer = responsiveY(9990);
     private int comienzoNoche;
     float dia = 0;
     boolean espacio;
@@ -53,6 +54,7 @@ public class PlayState extends State {
     float posicionluna;
     //float posicionSol;
     private Random rand;
+    float posanterior;
 
     private int puntaje;
     private BitmapFont puntajetext;
@@ -66,6 +68,7 @@ public class PlayState extends State {
         puntajetext = new BitmapFont();
 
         personaje = new Speedy(BattleJump.width / 2, 0);
+        burbuja = new Burbuja();
         cam.setToOrtho(false, BattleJump.width, BattleJump.height);
         espacio = false;
         existeEstrellas = false;
@@ -73,6 +76,7 @@ public class PlayState extends State {
         existeatardecer = false;
         //existeSol = false;
         dificultad = 0;
+        posanterior = 0;
         fondo = new Texture("Fondo_Tierra-Cielo_Cielo.png");
         suelo = new Texture("Fondo_Tierra-Cielo_Pasto.png");
         atardecer = new Texture("Atardecer.png");
@@ -156,7 +160,6 @@ public class PlayState extends State {
             if(existeatardecer){
                 posicionluna += campos - camposanterior - 0.5;
             }
-            puntaje = Math.round(personaje.getPosition().y / 10);
             //posicionSol += campos - camposanterior - responsiveY(1);
             if(espacio) {
                 for(Estrella star : estrellas) {
@@ -165,6 +168,11 @@ public class PlayState extends State {
             }
             LeftNube.getPosLeftNube().y -= responsiveY(2);
             RightNube.getPosRightNube().y -= responsiveY(2);
+        }
+
+        if(personaje.getVelocity().y > 0 && personaje.getPosition().y >= posanterior) {
+            puntaje = Math.round(personaje.getPosition().y / 10);
+            posanterior = personaje.getPosition().y;
         }
 
         for(Plataform plat : platforms){
@@ -204,6 +212,20 @@ public class PlayState extends State {
             if(pncplat.collides(personaje.getPlayerCollision()) && personaje.getVelocity().y <= 0){
                 gsm.set(new RetryState(gsm, puntaje, cam.position.y));
             }
+        }
+
+        if(burbuja.collides(personaje.getPlayerCollisionPoder())){
+            proximaposicion = personaje.getPosition().y + responsiveY(2200);
+            burbuja.reposition(Math .round(cam.position.y + (cam.viewportHeight / 2)));
+            personaje.burbuja();
+        }
+
+        if(personaje.getPosition().y >= proximaposicion){
+            personaje.normal();
+        }
+
+        if (cam.position.y - (cam.viewportHeight / 2) > burbuja.getPosBurbuja().y){
+            burbuja.reposition(Math .round(cam.position.y + (cam.viewportHeight / 2)));
         }
 
         if(cam.position.y - (cam.viewportHeight / 2) > LeftNube.getPosLeftNube().y + LeftNube.getNube().getHeight()){
@@ -290,6 +312,8 @@ public class PlayState extends State {
                 sb.draw(pncplat.getPlatPinches(), pncplat.getPosplataforma().x, pncplat.getPosplataforma().y, pncplat.responsiveX(pncplat.getPlatPinches()), pncplat.responsiveY(pncplat.getPlatPinches()));
             }
         }
+
+        sb.draw(burbuja.getBurbuja(), burbuja.getPosBurbuja().x, burbuja.getPosBurbuja().y, burbuja.getBurbuja().getWidth(), burbuja.getBurbuja().getHeight());
 
         puntajetext.draw(sb, puntajeLayout, 0, (cam.position.y + (cam.viewportHeight / 2)) - puntajeHeight);
 
