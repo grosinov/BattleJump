@@ -66,7 +66,7 @@ public class Speedy {
     }
 
     public void reboteTrampolin(){
-        velocity.y = responsiveY(1500);
+        velocity.y = responsiveY(2000);
     }
 
     public void normal(){

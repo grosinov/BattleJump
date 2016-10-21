@@ -7,13 +7,13 @@ import com.proyecto.battlejump.BattleJump;
 
 public class MenuState extends State{
     private Texture fondo;
-    private Texture fondo2;
     private Texture btnPlay;
+    private Texture btnHighScore;
     public MenuState(GameStateManager gsm) {
         super(gsm);
-        fondo = new Texture("Fondo_Tierra-Cielo_Cielo.png");
-        fondo2 = new Texture("Fondo_Tierra-Cielo_Pasto.png");
-        btnPlay = new Texture("btnPlay.png");
+        fondo = new Texture("Inicio.png");
+        btnPlay = new Texture("Jugar.png");
+        btnHighScore = new Texture("High_score.png");
     }
 
     @Override
@@ -32,15 +32,14 @@ public class MenuState extends State{
     public void render(SpriteBatch sb) {
         sb.begin();
         sb.draw(fondo, 0,0, BattleJump.width, BattleJump.height);
-        sb.draw(fondo2, 0,0, BattleJump.width, BattleJump.height);
-        sb.draw(btnPlay, BattleJump.width / 2 - btnPlay.getWidth() / 2, BattleJump.height / 2 - btnPlay.getHeight() / 2);
+        sb.draw(btnPlay, BattleJump.width / 2 - btnPlay.getWidth() / 2, BattleJump.height / 2 - btnPlay.getHeight() / 2 + BattleJump.height * 100 / 2560);
+        sb.draw(btnHighScore, BattleJump.width / 2 - btnHighScore.getWidth() / 2, BattleJump.height / 2 - btnHighScore.getHeight() / 2);
         sb.end();
     }
 
     @Override
     public void dispose() {
         fondo.dispose();
-        fondo2.dispose();
         btnPlay.dispose();
     }
 }

@@ -19,6 +19,8 @@ import com.proyecto.battlejump.sprites.Trampolin;
 import java.util.ArrayList;
 import java.util.Random;
 
+//NOMBRE DE PROYECTO, INTEGRANTES, TECNOLOGIAS, DESCRIPCION, SCREENSHOTS, MANDAR POR MAIL A AGRADNIK@GMAIL.COM
+
 public class PlayState extends State {
     private Texture fondo;
     private Texture suelo;
