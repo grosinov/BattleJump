@@ -14,6 +14,7 @@ import com.proyecto.battlejump.sprites.Plataforms.BrokenPlatform;
 import com.proyecto.battlejump.sprites.Plataforms.PinchePlatform;
 import com.proyecto.battlejump.sprites.Plataforms.Plataform;
 import com.proyecto.battlejump.sprites.Speedy;
+import com.proyecto.battlejump.sprites.Trampolin;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -35,6 +36,7 @@ public class PlayState extends State {
     Nube LeftNube;
     Nube RightNube;
     Burbuja burbuja;
+    Trampolin trampolin;
     int momento = 1;
 
     private int yPlatPos = 0;
@@ -42,6 +44,7 @@ public class PlayState extends State {
     private int cantplat = 15;
     private int platRotaPos;
     private int platpinchepos;
+    private int trampolinpos;
     private int comienzoAtardecer = responsiveY(9990);
     private int comienzoNoche;
     float dia = 0;
@@ -93,10 +96,12 @@ public class PlayState extends State {
         rand = new Random();
         platRotaPos = rand.nextInt(cantplat);
         platpinchepos = rand.nextInt(cantplat);
-        if(platRotaPos == platpinchepos){
-            while(platRotaPos == platpinchepos){
-                platpinchepos = rand.nextInt(cantplat);
-            }
+        trampolinpos = rand.nextInt(cantplat);
+        while(platRotaPos == platpinchepos){
+            platpinchepos = rand.nextInt(cantplat);
+        }
+        while(trampolinpos == platRotaPos || trampolinpos == platpinchepos){
+            trampolinpos = rand.nextInt(cantplat);
         }
 
         for(int i = 1; i <= cantplat; i++){
@@ -105,7 +110,11 @@ public class PlayState extends State {
             } else if (i == platpinchepos){
                 plataformaspinche.add(new PinchePlatform(yPlatPos));
             } else {
-                platforms.add(new Plataform(yPlatPos));
+                Plataform plat = new Plataform(yPlatPos);
+                platforms.add(plat);
+                if(i == trampolinpos){
+                    trampolin = new Trampolin(plat.getPosplataforma().x, plat.getPosplataforma().y);
+                }
             }
 
             yPlatPos += platSpace;
@@ -176,10 +185,14 @@ public class PlayState extends State {
             posanterior = personaje.getPosition().y;
         }
 
-        for(Plataform plat : platforms){
+        for(int i = 0; i < platforms.size(); i++) {
+            Plataform plat = platforms.get(i);
             if (cam.position.y - (cam.viewportHeight / 2) > plat.getPosplataforma().y){
                 plat.reposition(yPlatPos);
                 yPlatPos += platSpace;
+                if(i == trampolinpos){
+                    trampolin.reposition(plat.getPosplataforma().x, plat.getPosplataforma().y);
+                }
             }
 
             if(plat.collides(personaje.getPlayerCollision()) && personaje.getVelocity().y <= 0 || personaje.getPosition().y <= 0){
@@ -219,6 +232,10 @@ public class PlayState extends State {
             proximaposicion = personaje.getPosition().y + responsiveY(2200);
             burbuja.reposition(Math .round(cam.position.y + (cam.viewportHeight / 2)));
             personaje.burbuja();
+        }
+
+        if(trampolin.collides(personaje.getPlayerCollision()) && personaje.getVelocity().y < 0){
+            personaje.reboteTrampolin();
         }
 
         if(personaje.getPosition().y >= proximaposicion){
@@ -315,7 +332,7 @@ public class PlayState extends State {
                 sb.draw(pncplat.getPlatPinches(), pncplat.getPosplataforma().x, pncplat.getPosplataforma().y, pncplat.responsiveX(pncplat.getPlatPinches()), pncplat.responsiveY(pncplat.getPlatPinches()));
             }
         }
-
+        sb.draw(trampolin.getTrampolin(), trampolin.getTramPos().x, trampolin.getTramPos().y, responsiveX(trampolin.getTrampolin().getWidth()), responsiveY(trampolin.getTrampolin().getHeight()));
         sb.draw(burbuja.getBurbuja(), burbuja.getPosBurbuja().x, burbuja.getPosBurbuja().y, burbuja.getBurbuja().getWidth(), burbuja.getBurbuja().getHeight());
 
         puntajetext.draw(sb, puntajeLayout, 0, (cam.position.y + (cam.viewportHeight / 2)) - puntajeHeight);
@@ -329,6 +346,8 @@ public class PlayState extends State {
         atardecer.dispose();
         suelo.dispose();
         personaje.dispose();
+        trampolin.dispose();
+        burbuja.dispose();
         for(Plataform plat : platforms){
             plat.dispose();
         }

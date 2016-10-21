@@ -65,6 +65,10 @@ public class Speedy {
         velocity.y = responsiveY(2500);
     }
 
+    public void reboteTrampolin(){
+        velocity.y = responsiveY(1500);
+    }
+
     public void normal(){
         personaje = null;
         personaje = new Texture("personaje.png");

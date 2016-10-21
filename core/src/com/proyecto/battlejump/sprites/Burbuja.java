@@ -18,7 +18,7 @@ public class Burbuja{
         rand = new Random();
 
         burbuja = new Texture("burbuja.png");
-        posburbuja = new Vector2(rand.nextInt(BattleJump.width- burbuja.getWidth()) , rand.nextInt(BattleJump.height));
+        posburbuja = new Vector2(rand.nextInt(BattleJump.width - burbuja.getWidth()) , rand.nextInt(BattleJump.height));
 
         burcollision = new Rectangle(posburbuja.x, posburbuja.y, burbuja.getWidth(), burbuja.getHeight());
     }
