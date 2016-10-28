@@ -9,6 +9,7 @@ import com.badlogic.gdx.utils.Timer;
 import com.proyecto.battlejump.BattleJump;
 import com.proyecto.battlejump.sprites.Burbuja;
 import com.proyecto.battlejump.sprites.Estrella;
+import com.proyecto.battlejump.sprites.Moneda;
 import com.proyecto.battlejump.sprites.Nube;
 import com.proyecto.battlejump.sprites.Plataforms.BrokenPlatform;
 import com.proyecto.battlejump.sprites.Plataforms.PinchePlatform;
@@ -18,8 +19,6 @@ import com.proyecto.battlejump.sprites.Trampolin;
 
 import java.util.ArrayList;
 import java.util.Random;
-
-//NOMBRE DE PROYECTO, INTEGRANTES, TECNOLOGIAS, DESCRIPCION, SCREENSHOTS, MANDAR POR MAIL A AGRADNIK@GMAIL.COM
 
 public class PlayState extends State {
     private Texture fondo;
@@ -39,6 +38,7 @@ public class PlayState extends State {
     Nube RightNube;
     Burbuja burbuja;
     Trampolin trampolin;
+    Moneda moneda;
     int momento = 1;
 
     private int yPlatPos = 0;
@@ -47,6 +47,7 @@ public class PlayState extends State {
     private int platRotaPos;
     private int platpinchepos;
     private int trampolinpos;
+    private int monedapos;
     private int comienzoAtardecer = responsiveY(9990);
     private int comienzoNoche;
     float dia = 0;
@@ -62,15 +63,21 @@ public class PlayState extends State {
     float posanterior;
 
     private int puntaje;
+    private int dinero;
     private BitmapFont puntajetext;
+    private BitmapFont dinerotext;
     GlyphLayout puntajeLayout;
+    GlyphLayout dineroLayout;
     float puntajeHeight;
+    float dineroHeight;
 
     public PlayState(GameStateManager gsm) {
         super(gsm);
 
         puntajeLayout = new GlyphLayout();
+        dineroLayout = new GlyphLayout();
         puntajetext = new BitmapFont();
+        dinerotext = new BitmapFont();
 
         personaje = new Speedy(BattleJump.width / 2, 0);
         burbuja = new Burbuja();
@@ -99,11 +106,15 @@ public class PlayState extends State {
         platRotaPos = rand.nextInt(cantplat);
         platpinchepos = rand.nextInt(cantplat);
         trampolinpos = rand.nextInt(cantplat);
+        monedapos = rand.nextInt(cantplat);
         while(platRotaPos == platpinchepos){
             platpinchepos = rand.nextInt(cantplat);
         }
         while(trampolinpos == platRotaPos || trampolinpos == platpinchepos){
             trampolinpos = rand.nextInt(cantplat);
+        }
+        while(monedapos == platRotaPos || monedapos == platpinchepos || monedapos == trampolinpos){
+            monedapos = rand.nextInt(cantplat);
         }
 
         for(int i = 1; i <= cantplat; i++){
@@ -116,6 +127,8 @@ public class PlayState extends State {
                 platforms.add(plat);
                 if(i == trampolinpos){
                     trampolin = new Trampolin(plat.getPosplataforma().x, plat.getPosplataforma().y);
+                } else if(i == monedapos){
+                    moneda = new Moneda(plat.getPosplataforma().x, plat.getPosplataforma().y);
                 }
             }
 
@@ -144,8 +157,11 @@ public class PlayState extends State {
         personaje.update(dt);
 
         puntajetext.getData().setScale(5, 5);
+        dinerotext.getData().setScale(5, 5);
         puntajeLayout.setText(puntajetext, String.valueOf(puntaje));
+        dineroLayout.setText(dinerotext, String.valueOf(dinero));
         puntajeHeight = puntajeLayout.height;
+        dineroHeight = dineroLayout.height;
 
         /*if(!existeSol){
             posicionSol = cam.position.y - (cam.viewportHeight / 2) - sol.getHeight() - 50;
@@ -194,6 +210,8 @@ public class PlayState extends State {
                 yPlatPos += platSpace;
                 if(i == trampolinpos){
                     trampolin.reposition(plat.getPosplataforma().x, plat.getPosplataforma().y);
+                } else if(i == monedapos){
+                    moneda.reposition(plat.getPosplataforma().x, plat.getPosplataforma().y);
                 }
             }
 
@@ -238,6 +256,10 @@ public class PlayState extends State {
 
         if(trampolin.collides(personaje.getPlayerCollision()) && personaje.getVelocity().y < 0){
             personaje.reboteTrampolin();
+        }
+
+        if(moneda.collides(personaje.getPlayerCollisionPoder())){
+            dinero += 100;
         }
 
         if(personaje.getPosition().y >= proximaposicion){
@@ -335,9 +357,11 @@ public class PlayState extends State {
             }
         }
         sb.draw(trampolin.getTrampolin(), trampolin.getTramPos().x, trampolin.getTramPos().y, responsiveX(trampolin.getTrampolin().getWidth()), responsiveY(trampolin.getTrampolin().getHeight()));
+        sb.draw(moneda.getMoneda(), moneda.getPosMoneda().x, moneda.getPosMoneda().y, responsiveX(moneda.getMoneda().getWidth()), responsiveY(moneda.getMoneda().getHeight()));
         sb.draw(burbuja.getBurbuja(), burbuja.getPosBurbuja().x, burbuja.getPosBurbuja().y, burbuja.getBurbuja().getWidth(), burbuja.getBurbuja().getHeight());
 
         puntajetext.draw(sb, puntajeLayout, 0, (cam.position.y + (cam.viewportHeight / 2)) - puntajeHeight);
+        dinerotext.draw(sb, dineroLayout, 0, (cam.position.y + (cam.viewportHeight / 2)) - puntajeHeight - dineroHeight);
 
         sb.end();
     }
@@ -348,6 +372,7 @@ public class PlayState extends State {
         atardecer.dispose();
         suelo.dispose();
         personaje.dispose();
+        moneda.dispose();
         trampolin.dispose();
         burbuja.dispose();
         for(Plataform plat : platforms){

@@ -12,7 +12,7 @@ public class Trampolin {
 
     public Trampolin(float x, float y) {
         trampolin = new Texture("Trampolin.png");
-        tramPos = new Vector2(x, y + responsiveX(trampolin.getHeight()));
+        tramPos = new Vector2(x, y + responsiveY(trampolin.getHeight()));
         tramColision = new Rectangle(tramPos.x, tramPos.y, responsiveX(trampolin.getWidth()), responsiveY(trampolin.getHeight()));
     }
 
@@ -29,7 +29,7 @@ public class Trampolin {
     }
 
     public void reposition(float x, float y){
-        tramPos.set(x, y + responsiveX(trampolin.getHeight()));
+        tramPos.set(x, y + responsiveY(trampolin.getHeight()));
         tramColision.setPosition(tramPos.x, tramPos.y);
     }
 
