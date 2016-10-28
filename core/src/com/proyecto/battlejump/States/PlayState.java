@@ -128,7 +128,7 @@ public class PlayState extends State {
                 if(i == trampolinpos){
                     trampolin = new Trampolin(plat.getPosplataforma().x, plat.getPosplataforma().y);
                 } else if(i == monedapos){
-                    moneda = new Moneda(plat.getPosplataforma().x, plat.getPosplataforma().y);
+                    moneda = new Moneda();
                 }
             }
 
@@ -211,7 +211,7 @@ public class PlayState extends State {
                 if(i == trampolinpos){
                     trampolin.reposition(plat.getPosplataforma().x, plat.getPosplataforma().y);
                 } else if(i == monedapos){
-                    moneda.reposition(plat.getPosplataforma().x, plat.getPosplataforma().y);
+                    moneda.reposition(Math .round(cam.position.y + (cam.viewportHeight / 2)));
                 }
             }
 
@@ -260,6 +260,7 @@ public class PlayState extends State {
 
         if(moneda.collides(personaje.getPlayerCollisionPoder())){
             dinero += 100;
+            moneda.reposition(Math .round(cam.position.y + (cam.viewportHeight / 2)));
         }
 
         if(personaje.getPosition().y >= proximaposicion){
