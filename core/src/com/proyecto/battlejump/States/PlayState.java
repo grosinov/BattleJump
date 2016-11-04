@@ -359,7 +359,7 @@ public class PlayState extends State {
         }
         sb.draw(trampolin.getTrampolin(), trampolin.getTramPos().x, trampolin.getTramPos().y, responsiveX(trampolin.getTrampolin().getWidth()), responsiveY(trampolin.getTrampolin().getHeight()));
         sb.draw(moneda.getMoneda(), moneda.getPosMoneda().x, moneda.getPosMoneda().y, responsiveX(moneda.getMoneda().getWidth()), responsiveY(moneda.getMoneda().getHeight()));
-        sb.draw(burbuja.getBurbuja(), burbuja.getPosBurbuja().x, burbuja.getPosBurbuja().y, burbuja.getBurbuja().getWidth(), burbuja.getBurbuja().getHeight());
+        sb.draw(burbuja.getBurbuja(), burbuja.getPosBurbuja().x, burbuja.getPosBurbuja().y, responsiveX(burbuja.getBurbuja().getWidth()), responsiveY(burbuja.getBurbuja().getHeight()));
 
         puntajetext.draw(sb, puntajeLayout, 0, (cam.position.y + (cam.viewportHeight / 2)) - puntajeHeight);
         dinerotext.draw(sb, dineroLayout, 0, (cam.position.y + (cam.viewportHeight / 2)) - puntajeHeight - dineroHeight);

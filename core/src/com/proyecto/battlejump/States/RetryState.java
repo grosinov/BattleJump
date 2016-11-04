@@ -14,7 +14,7 @@ public class RetryState extends State implements Input.TextInputListener{
     private Texture fondo2;
     private String perdio = "Has perdido!";
     private float campos = 0;
-    private int puntaje = 0;
+    public int puntaje = 0;
 
     private BitmapFont perdiotext;
     private BitmapFont puntajetext;
@@ -27,6 +27,10 @@ public class RetryState extends State implements Input.TextInputListener{
     float highscoreWidth;
     Preferences prefs = Gdx.app.getPreferences("My Preferences");
     int HighScore = prefs.getInteger("highscore");
+    int HighScore2 = prefs.getInteger("highscore2");
+    int HighScore3 = prefs.getInteger("highscore3");
+    int HighScore4 = prefs.getInteger("highscore4");
+    int HighScore5 = prefs.getInteger("highscore5");
 
     public RetryState(GameStateManager gsm, int puntaje, float campos) {
         super(gsm);
@@ -42,9 +46,37 @@ public class RetryState extends State implements Input.TextInputListener{
         this.puntaje = puntaje;
         this.campos = campos;
 
-        if(puntaje > HighScore){
+        if (puntaje > HighScore) {
+            HighScore5 = HighScore4;
+            HighScore4 = HighScore3;
+            HighScore3 = HighScore2;
+            HighScore2 = HighScore;
             HighScore = puntaje;
             prefs.putInteger("highscore", HighScore);
+            prefs.flush();
+        } else {
+            if (puntaje > HighScore2) {
+                HighScore5 = HighScore4;
+                HighScore4 = HighScore3;
+                HighScore3 = HighScore2;
+                HighScore2 = puntaje;
+            }
+            if (puntaje > HighScore3) {
+                HighScore5 = HighScore4;
+                HighScore4 = HighScore3;
+                HighScore3 = puntaje;
+            }
+            if (puntaje > HighScore4) {
+                HighScore5 = HighScore4;
+                HighScore4 = puntaje;
+            }
+            if (puntaje > HighScore5) {
+                HighScore5 = puntaje;
+            }
+            prefs.putInteger("highscore2", HighScore2);
+            prefs.putInteger("highscore3", HighScore3);
+            prefs.putInteger("highscore4", HighScore4);
+            prefs.putInteger("highscore5", HighScore5);
             prefs.flush();
         }
     }

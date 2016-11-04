@@ -41,7 +41,7 @@ public class HighScoresState extends State implements Input.TextInputListener{
 
     public HighScoresState(GameStateManager gsm) {
         super(gsm);
-        fondo = new Texture("Fondo_Tierra-Cielo_Cielo.png");
+        fondo = new Texture("FondoHighScore.png");
         HighScoreLayout = new GlyphLayout();
         HighScore2Layout = new GlyphLayout();
         HighScore3Layout = new GlyphLayout();
@@ -52,14 +52,13 @@ public class HighScoresState extends State implements Input.TextInputListener{
         HighScore3Text = new BitmapFont();
         HighScore4Text = new BitmapFont();
         HighScore5Text = new BitmapFont();
-
-        prefs.putInteger("highscore", HighScore);
-        prefs.flush();
     }
 
     @Override
     public void handleInput() {
-
+        if(Gdx.input.justTouched()){
+            gsm.set(new MenuState(gsm));
+        }
     }
 
     @Override
@@ -88,12 +87,12 @@ public class HighScoresState extends State implements Input.TextInputListener{
     @Override
     public void render(SpriteBatch sb) {
         sb.begin();
-        sb.draw(fondo, 0, campos - BattleJump.height / 2, BattleJump.width, BattleJump.height);
-        HighScoreText.draw(sb, HighScoreLayout, BattleJump.width / 2 - HighScoreWidth / 2, BattleJump.height / 2 + responsiveY(200));
-        HighScore2Text.draw(sb, HighScore2Layout, BattleJump.width / 2 - HighScore2Width / 2, BattleJump.height / 2 + responsiveY(100));
+        sb.draw(fondo, 0, campos, BattleJump.width, BattleJump.height);
+        HighScoreText.draw(sb, HighScoreLayout, BattleJump.width / 2 - HighScoreWidth / 2, BattleJump.height / 2 + responsiveY(400));
+        HighScore2Text.draw(sb, HighScore2Layout, BattleJump.width / 2 - HighScore2Width / 2, BattleJump.height / 2 + responsiveY(200));
         HighScore3Text.draw(sb, HighScore3Layout, BattleJump.width / 2 - HighScore3Width / 2, BattleJump.height / 2);
-        HighScore4Text.draw(sb, HighScore4Layout, BattleJump.width / 2 - HighScore4Width / 2, BattleJump.height / 2 - responsiveY(100));
-        HighScore5Text.draw(sb, HighScore5Layout, BattleJump.width / 2 - HighScore5Width / 2, BattleJump.height / 2 - responsiveY(200));
+        HighScore4Text.draw(sb, HighScore4Layout, BattleJump.width / 2 - HighScore4Width / 2, BattleJump.height / 2 - responsiveY(200));
+        HighScore5Text.draw(sb, HighScore5Layout, BattleJump.width / 2 - HighScore5Width / 2, BattleJump.height / 2 - responsiveY(400));
         sb.end();
     }
 

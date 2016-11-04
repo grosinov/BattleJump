@@ -15,8 +15,10 @@ public class Moneda {
     Random rand;
 
     public Moneda() {
+        rand = new Random();
         moneda = new Texture("Moneda.png");
         posMoneda = new Vector2(rand.nextInt(BattleJump.width - moneda.getWidth()) , rand.nextInt(BattleJump.height));
+        monColision = new Rectangle(posMoneda.x, posMoneda.y, moneda.getWidth(), moneda.getHeight());
     }
     public Texture getMoneda() {
         return moneda;

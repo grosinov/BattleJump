@@ -62,7 +62,7 @@ public class Speedy {
     public void burbuja(){
         personaje = null;
         personaje = new Texture("burbuja.png");
-        velocity.y = responsiveY(2500);
+        velocity.y = 2500;
     }
 
     public void reboteTrampolin(){
@@ -75,7 +75,7 @@ public class Speedy {
     }
 
     public void jump(){
-        velocity.y = responsiveY(1200);
+        velocity.y = 1200;
     }
 
     public Rectangle getPlayerCollision(){
