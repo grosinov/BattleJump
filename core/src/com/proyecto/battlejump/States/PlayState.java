@@ -1,6 +1,7 @@
 package com.proyecto.battlejump.States;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
@@ -71,6 +72,8 @@ public class PlayState extends State {
     float puntajeHeight;
     float dineroHeight;
 
+    Preferences prefs;
+
     public PlayState(GameStateManager gsm) {
         super(gsm);
 
@@ -138,6 +141,9 @@ public class PlayState extends State {
 
         LeftNube = new Nube();
         RightNube = new Nube();
+
+        prefs = Gdx.app.getPreferences("My Preferences");
+        dinero = prefs.getInteger("Dinero");
     }
 
     @Override
@@ -281,6 +287,7 @@ public class PlayState extends State {
 
         if (cam.position.y - (cam.viewportHeight / 2) > personaje.getPosition().y + responsiveY(50)){
             gsm.set(new RetryState(gsm, puntaje, cam.position.y));
+            prefs.putInteger("Dinero", dinero);
         }
 
         if(cam.position.y + (cam.viewportHeight / 2) >= comienzoAtardecer) {

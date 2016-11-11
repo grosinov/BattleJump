@@ -84,16 +84,16 @@ public class RetryState extends State implements Input.TextInputListener{
     @Override
     public void handleInput() {
         if(Gdx.input.justTouched()){
-            gsm.set(new PlayState(gsm));
+            gsm.set(new MenuState(gsm));
         }
     }
 
     @Override
     public void update(float dt) {
         handleInput();
-        perdiotext.getData().setScale(5, 5);
-        puntajetext.getData().setScale(5, 5);
-        highscoretext.getData().setScale(5, 5);
+        perdiotext.getData().setScale(responsiveX(5), responsiveY(5));
+        puntajetext.getData().setScale(responsiveX(5), responsiveY(5));
+        highscoretext.getData().setScale(responsiveX(5), responsiveY(5));
 
         perdioLayout.setText(perdiotext, perdio);
         puntajeLayout.setText(puntajetext, "Tu puntaje final es: " + String.valueOf(puntaje));
@@ -131,5 +131,17 @@ public class RetryState extends State implements Input.TextInputListener{
     @Override
     public void canceled() {
 
+    }
+
+    public int responsiveY (int tamaño){
+        int tamañoY;
+        tamañoY = (BattleJump.height * tamaño) / 2560;
+        return tamañoY;
+    }
+
+    public int responsiveX (int tamaño){
+        int tamañoY;
+        tamañoY = (BattleJump.width * tamaño) / 1440;
+        return tamañoY;
     }
 }

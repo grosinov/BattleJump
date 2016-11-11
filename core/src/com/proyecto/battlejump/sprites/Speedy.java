@@ -1,6 +1,7 @@
 package com.proyecto.battlejump.sprites;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Rectangle;
@@ -17,11 +18,13 @@ public class Speedy {
     private Rectangle colisionPoder;
 
     private Texture personaje;
+    Preferences prefs = Gdx.app.getPreferences("My Preferences");
+    int seleccionado = prefs.getInteger("Seleccionado");
 
     public Speedy(float x, float y){
         position = new Vector3(x, y, 0);
         velocity = new Vector3(0, 0, 0);
-        personaje = new Texture("personaje.png");
+        elejirPersonaje();
         playerCollision = new Rectangle(x, y, responsiveX(personaje.getWidth()), (responsiveY(personaje.getHeight()) * 2) / personaje.getHeight());
         colisionPoder = new Rectangle(x, y, responsiveX(personaje.getWidth()), responsiveY(personaje.getHeight()));
     }
@@ -71,7 +74,7 @@ public class Speedy {
 
     public void normal(){
         personaje = null;
-        personaje = new Texture("personaje.png");
+        elejirPersonaje();
     }
 
     public void jump(){
@@ -100,5 +103,22 @@ public class Speedy {
         int tamañoY;
         tamañoY = (BattleJump.height * tamaño) / 2560;
         return tamañoY;
+    }
+
+    private void elejirPersonaje(){
+        switch (seleccionado){
+            case 0:
+                personaje = new Texture("personaje.png");
+                break;
+            case 1:
+                personaje = new Texture("personaje1.png");
+                break;
+            case 2:
+                personaje = new Texture("personaje2.png");
+                break;
+            case 3:
+                personaje = new Texture("personaje3.png");
+                break;
+        }
     }
 }

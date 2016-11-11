@@ -13,8 +13,8 @@ public class MenuState extends State{
     public MenuState(GameStateManager gsm) {
         super(gsm);
         fondo = new Texture("Inicio.png");
-        btnPlay = new Texture("Jugar.png");
-        btnHighScore = new Texture("High_score.png");
+        btnPlay = new Texture("btnJugar.png");
+        btnHighScore = new Texture("btnHighScore.png");
         btnTienda = new Texture("btnTienda.png");
     }
 
