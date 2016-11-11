@@ -24,10 +24,6 @@ public class TiendaState extends State {
     private Texture personaje1;
     private Texture personaje2;
     private Texture personaje3;
-    private boolean comprado = true;
-    private boolean comprado1 = false;
-    private boolean comprado2 = false;
-    private boolean comprado3 = false;
     private int id = 0;
     private int id1 = 1;
     private int id2 = 2;
@@ -50,9 +46,16 @@ public class TiendaState extends State {
     int dinero = prefs.getInteger("Dinero");
     int seleccionado = prefs.getInteger("Seleccionado");
 
+    private boolean comprado = true;
+    private boolean comprado1 = prefs.getBoolean("Comprado1");;
+    private boolean comprado2 = prefs.getBoolean("Comprado2");;
+    private boolean comprado3 = prefs.getBoolean("Comprado3");;
 
-    public TiendaState(GameStateManager gsm){
+    float campos;
+
+    public TiendaState(GameStateManager gsm, float campos){
         super(gsm);
+        this.campos = campos;
         DineroText = new BitmapFont();
         ValorText = new BitmapFont();
         DineroLayout = new GlyphLayout();
@@ -77,7 +80,7 @@ public class TiendaState extends State {
             if(Gdx.input.getX() > BattleJump.width / 2 - responsiveX(btnSeleccionar.getWidth() / 2)  && Gdx.input.getX() < BattleJump.width / 2 - responsiveX(btnSeleccionar.getWidth() / 2)  + responsiveX(btnSeleccionar.getWidth()) && Gdx.input.getY() < BattleJump.height - BattleJump.height / 5 + responsiveY(btnSeleccionar.getHeight() / 2) && Gdx.input.getY() > BattleJump.height - BattleJump.height / 5 + responsiveY(btnSeleccionar.getHeight() / 2) - responsiveY(btnSeleccionar.getHeight())) {
                 switch (actual) {
                     case 0:
-                        if(!comprado){
+                        if(comprado){
                             if (seleccionado != 0) {
                                 seleccionado = 0;
                             }
@@ -85,7 +88,7 @@ public class TiendaState extends State {
 
                         break;
                     case 1:
-                        if(!comprado1){
+                        if(comprado1){
                             if (seleccionado != 1) {
                                 seleccionado = 1;
                             }
@@ -93,7 +96,7 @@ public class TiendaState extends State {
 
                         break;
                     case 2:
-                        if(!comprado2){
+                        if(comprado2){
                             if (seleccionado != 2) {
                                 seleccionado = 2;
                             }
@@ -108,50 +111,55 @@ public class TiendaState extends State {
                         break;
                 }
                 prefs.putInteger("Seleccionado", seleccionado);
+                prefs.flush();
             }
 
             if(Gdx.input.getX() > BattleJump.width / 2 - responsiveX(btnComprar.getWidth() / 2)  && Gdx.input.getX() < BattleJump.width / 2 - responsiveX(btnComprar.getWidth() / 2)  + responsiveX(btnComprar.getWidth()) && Gdx.input.getY() < BattleJump.height - BattleJump.height / 5 - responsiveY(btnSeleccionar.getHeight()) / 2 - responsiveY(50) && Gdx.input.getY() > BattleJump.height - BattleJump.height / 5 - responsiveY(btnSeleccionar.getHeight()) / 2 - responsiveY(50) - responsiveY(btnComprar.getHeight())) { //BattleJump.height / 5 - responsiveY(btnSeleccionar.getHeight()) / 2 - responsiveY(50)
                 //btnComprar
-                System.out.println("Toco");
                 switch (actual) {
                     case 0:
                         if (!comprado) {
-                            if(dinero > 100){
-                                comprado = true;
+                            if(dinero >= 100){
                                 dinero-=100;
+                                comprado = true;
                             }
                         }
                         break;
                     case 1:
-                        if (comprado1) {
-                            if(dinero > 1000){
+                        if (!comprado1) {
+                            if(dinero >= 1000){
                                 comprado1 = true;
                                 dinero-=1000;
+                                prefs.putBoolean("Comprado1", comprado1);
                             }
                         }
                         break;
                     case 2:
-                        if (comprado2) {
-                            if(dinero > 1000){
+                        if (!comprado2) {
+                            if(dinero >= 1000){
                                 comprado2 = true;
                                 dinero-=1000;
+                                prefs.putBoolean("Comprado2", comprado2);
                             }
                         }
                         break;
                     case 3:
-                        if (comprado3) {
-                            if(dinero > 1500){
-                                comprado2 = true;
+                        if (!comprado3) {
+                            if(dinero >= 1500){
+                                comprado3 = true;
                                 dinero-=1500;
+                                prefs.putBoolean("Comprado3", comprado3);
                             }
                         }
                         break;
                 }
+                prefs.putInteger("Dinero", dinero);
+                prefs.flush();
             }
 
             if(Gdx.input.getX() > BattleJump.width / 2 - responsiveX(btnVolver.getWidth() / 2)  && Gdx.input.getX() < BattleJump.width / 2 - responsiveX(btnVolver.getWidth() / 2)  + responsiveX(btnVolver.getWidth()) && Gdx.input.getY() < BattleJump.height - BattleJump.height / 5 + responsiveY(btnSeleccionar.getHeight() / 2)  + responsiveY(btnVolver.getHeight()) + responsiveY(50) && Gdx.input.getY() > BattleJump.height - BattleJump.height / 5 + responsiveY(btnSeleccionar.getHeight() / 2)  + responsiveY(btnVolver.getHeight()) + responsiveY(50) - responsiveY(btnVolver.getHeight())) {
                 //btnVolver
-                gsm.set(new MenuState(gsm));
+                gsm.set(new MenuState(gsm, campos));
 
             }
 
@@ -175,8 +183,8 @@ public class TiendaState extends State {
     @Override
     public void update(float dt) {
         handleInput();
-        DineroText.getData().setScale(responsiveX(5), responsiveY(5));
-        ValorText.getData().setScale(responsiveX(5), responsiveY(5));
+        DineroText.getData().setScale(responsiveX(6), responsiveY(6));
+        ValorText.getData().setScale(responsiveX(6), responsiveY(6));
 
         DineroLayout.setText(DineroText, "" + dinero);
 
@@ -187,14 +195,14 @@ public class TiendaState extends State {
     @Override
     public void render(SpriteBatch sb) {
         sb.begin();
-        sb.draw(fondo, 0, 0, BattleJump.width, BattleJump.height);
-        sb.draw(Moneda, 0, BattleJump.height - DineroHeight * 2, responsiveX(Moneda.getWidth()), responsiveY(Moneda.getHeight()));
-        DineroText.draw(sb, DineroLayout, 0 + Moneda.getWidth(), BattleJump.height - DineroHeight);
-        sb.draw(FlechaIzquierda, 0, BattleJump.height / 2 - FlechaIzquierda.getHeight() / 2, FlechaIzquierda.getWidth(), FlechaIzquierda.getHeight());
-        sb.draw(FlechaDerecha, BattleJump.width - responsiveX(FlechaDerecha.getWidth()), BattleJump.height / 2 - responsiveY(FlechaDerecha.getHeight()) / 2, responsiveX(FlechaDerecha.getWidth()), responsiveY(FlechaDerecha.getHeight()));
+        sb.draw(fondo, 0, campos, BattleJump.width, BattleJump.height);
+        sb.draw(Moneda, 0, campos + BattleJump.height - DineroHeight * 2, responsiveX(Moneda.getWidth()), responsiveY(Moneda.getHeight()));
+        DineroText.draw(sb, DineroLayout, 0 + responsiveX(Moneda.getWidth()), campos + BattleJump.height - DineroHeight);
+        sb.draw(FlechaIzquierda, 0, campos + BattleJump.height / 2 - responsiveY(FlechaIzquierda.getHeight()) / 2, responsiveX(FlechaIzquierda.getWidth()), responsiveY(FlechaIzquierda.getHeight()));
+        sb.draw(FlechaDerecha, BattleJump.width - responsiveX(FlechaDerecha.getWidth()), campos + BattleJump.height / 2 - responsiveY(FlechaDerecha.getHeight()) / 2, responsiveX(FlechaDerecha.getWidth()), responsiveY(FlechaDerecha.getHeight()));
         switch(actual) {
             case 0:
-                sb.draw(personaje, BattleJump.width / 2 - responsiveX(personaje.getWidth()) / 2, BattleJump.height / 2 - responsiveY(personaje.getHeight()) / 2, responsiveX(personaje.getWidth()), responsiveY(personaje.getHeight()));
+                sb.draw(personaje, BattleJump.width / 2 - responsiveX(personaje.getWidth()) / 2, campos + BattleJump.height / 2 - responsiveY(personaje.getHeight()) / 2, responsiveX(personaje.getWidth()), responsiveY(personaje.getHeight()));
                 if(seleccionado == 0){
                     ValorLayout.setText(ValorText, "Seleccionado!");
                 } else if(comprado) {
@@ -204,7 +212,7 @@ public class TiendaState extends State {
                 }
                 break;
             case 1:
-                sb.draw(personaje1, BattleJump.width / 2 - responsiveX(personaje1.getWidth()) / 2, BattleJump.height / 2 - responsiveY(personaje1.getHeight()) / 2, responsiveX(personaje1.getWidth()), responsiveY(personaje1.getHeight()));
+                sb.draw(personaje1, BattleJump.width / 2 - responsiveX(personaje1.getWidth()) / 2, campos + BattleJump.height / 2 - responsiveY(personaje1.getHeight()) / 2, responsiveX(personaje1.getWidth()), responsiveY(personaje1.getHeight()));
                 if(seleccionado == 1){
                     ValorLayout.setText(ValorText, "Seleccionado!");
                 } else if(comprado1) {
@@ -214,7 +222,7 @@ public class TiendaState extends State {
                 }
                 break;
             case 2:
-                sb.draw(personaje2, BattleJump.width / 2 - responsiveX(personaje2.getWidth()) / 2, BattleJump.height / 2 - responsiveY(personaje2.getHeight()) / 2, responsiveX(personaje2.getWidth()), responsiveY(personaje2.getHeight()));
+                sb.draw(personaje2, BattleJump.width / 2 - responsiveX(personaje2.getWidth()) / 2, campos + BattleJump.height / 2 - responsiveY(personaje2.getHeight()) / 2, responsiveX(personaje2.getWidth()), responsiveY(personaje2.getHeight()));
                 if(seleccionado == 2){
                     ValorLayout.setText(ValorText, "Seleccionado!");
                 } else if(comprado2) {
@@ -224,7 +232,7 @@ public class TiendaState extends State {
                 }
                 break;
             case 3:
-                sb.draw(personaje3, BattleJump.width / 2 - responsiveX(personaje3.getWidth()) / 2, BattleJump.height / 2 - responsiveY(personaje3.getHeight()) / 2, responsiveX(personaje3.getWidth()), responsiveY(personaje3.getHeight()));
+                sb.draw(personaje3, BattleJump.width / 2 - responsiveX(personaje3.getWidth()) / 2, campos + BattleJump.height / 2 - responsiveY(personaje3.getHeight()) / 2, responsiveX(personaje3.getWidth()), responsiveY(personaje3.getHeight()));
                 if(seleccionado == 3){
                     ValorLayout.setText(ValorText, "Seleccionado!");
                 } else if(comprado3) {
@@ -236,11 +244,11 @@ public class TiendaState extends State {
         }
         ValorWidth = ValorLayout.width;
         ValorHeight = ValorLayout.height;
-        sb.draw(Moneda, BattleJump.width / 2 - ValorWidth / 2 - Moneda.getWidth(), BattleJump.height, responsiveX(Moneda.getWidth()), responsiveY(Moneda.getHeight()));
-        ValorText.draw(sb, ValorLayout, BattleJump.width / 2 - ValorWidth / 2, BattleJump.height / 2 - personaje.getHeight() / 2 - ValorHeight - responsiveY(50));
-        sb.draw(btnComprar, BattleJump.width / 2 - responsiveX(btnComprar.getWidth()) / 2, BattleJump.height / 5 + responsiveY(btnSeleccionar.getHeight()) / 2 + responsiveY(50), responsiveX(btnComprar.getWidth()), responsiveY(btnComprar.getHeight()));
-        sb.draw(btnSeleccionar, BattleJump.width / 2 - responsiveX(btnSeleccionar.getWidth()) / 2, BattleJump.height / 5 - responsiveY(btnSeleccionar.getHeight() / 2) , responsiveX(btnSeleccionar.getWidth()), responsiveY(btnSeleccionar.getHeight()));
-        sb.draw(btnVolver, BattleJump.width / 2 - responsiveX(btnVolver.getWidth()) / 2, BattleJump.height / 5 - responsiveY(btnSeleccionar.getHeight() / 2)  - responsiveY(btnVolver.getHeight()) - responsiveY(50), responsiveX(btnSeleccionar.getWidth()), responsiveY(btnSeleccionar.getHeight()));
+        sb.draw(Moneda, BattleJump.width / 2 - ValorWidth / 2 - responsiveX(Moneda.getWidth()), campos + BattleJump.height, responsiveX(Moneda.getWidth()), responsiveY(Moneda.getHeight()));
+        ValorText.draw(sb, ValorLayout, BattleJump.width / 2 - ValorWidth / 2, campos + BattleJump.height / 2 - personaje.getHeight() / 2 - ValorHeight - responsiveY(50));
+        sb.draw(btnComprar, BattleJump.width / 2 - responsiveX(btnComprar.getWidth()) / 2, campos + BattleJump.height / 5 + responsiveY(btnSeleccionar.getHeight()) / 2 + responsiveY(50), responsiveX(btnComprar.getWidth()), responsiveY(btnComprar.getHeight()));
+        sb.draw(btnSeleccionar, BattleJump.width / 2 - responsiveX(btnSeleccionar.getWidth()) / 2, campos + BattleJump.height / 5 - responsiveY(btnSeleccionar.getHeight() / 2) , responsiveX(btnSeleccionar.getWidth()), responsiveY(btnSeleccionar.getHeight()));
+        sb.draw(btnVolver, BattleJump.width / 2 - responsiveX(btnVolver.getWidth()) / 2, campos + BattleJump.height / 5 - responsiveY(btnSeleccionar.getHeight() / 2)  - responsiveY(btnVolver.getHeight()) - responsiveY(50), responsiveX(btnSeleccionar.getWidth()), responsiveY(btnSeleccionar.getHeight()));
         sb.end();
     }
 

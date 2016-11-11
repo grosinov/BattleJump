@@ -65,11 +65,20 @@ public class Speedy {
     public void burbuja(){
         personaje = null;
         personaje = new Texture("burbuja.png");
-        velocity.y = 2500;
+        if(BattleJump.height > 1280){
+            velocity.y = responsiveY(2500);
+        } else {
+            velocity.y = responsiveY(3300);
+        }
     }
 
     public void reboteTrampolin(){
-        velocity.y = responsiveY(2000);
+        if(BattleJump.height > 1280){
+            velocity.y = responsiveY(2000);
+        } else {
+            velocity.y = responsiveY(2800);
+        }
+
     }
 
     public void normal(){
@@ -78,7 +87,11 @@ public class Speedy {
     }
 
     public void jump(){
-        velocity.y = 1200;
+        if(BattleJump.height > 1280){
+            velocity.y = 1200;
+        } else {
+            velocity.y = responsiveY(2000);
+        }
     }
 
     public Rectangle getPlayerCollision(){
@@ -111,13 +124,13 @@ public class Speedy {
                 personaje = new Texture("personaje.png");
                 break;
             case 1:
-                personaje = new Texture("personaje1.png");
+                personaje = new Texture("Personaje1.png");
                 break;
             case 2:
-                personaje = new Texture("personaje2.png");
+                personaje = new Texture("Personaje2.png");
                 break;
             case 3:
-                personaje = new Texture("personaje3.png");
+                personaje = new Texture("Personaje3.png");
                 break;
         }
     }

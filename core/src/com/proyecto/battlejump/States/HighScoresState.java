@@ -39,8 +39,9 @@ public class HighScoresState extends State implements Input.TextInputListener{
     int HighScore4 = prefs.getInteger("highscore4");
     int HighScore5 = prefs.getInteger("highscore5");
 
-    public HighScoresState(GameStateManager gsm) {
+    public HighScoresState(GameStateManager gsm, float campos) {
         super(gsm);
+        this.campos = campos;
         fondo = new Texture("FondoHighScore.png");
         HighScoreLayout = new GlyphLayout();
         HighScore2Layout = new GlyphLayout();
@@ -57,18 +58,18 @@ public class HighScoresState extends State implements Input.TextInputListener{
     @Override
     public void handleInput() {
         if(Gdx.input.justTouched()){
-            gsm.set(new MenuState(gsm));
+            gsm.set(new MenuState(gsm, campos));
         }
     }
 
     @Override
     public void update(float dt) {
         handleInput();
-        HighScoreText.getData().setScale(5, 5);
-        HighScore2Text.getData().setScale(5, 5);
-        HighScore3Text.getData().setScale(5, 5);
-        HighScore4Text.getData().setScale(5, 5);
-        HighScore5Text.getData().setScale(5, 5);
+        HighScoreText.getData().setScale(responsiveX(6), responsiveY(6));
+        HighScore2Text.getData().setScale(responsiveX(6), responsiveY(6));
+        HighScore3Text.getData().setScale(responsiveX(6), responsiveY(6));
+        HighScore4Text.getData().setScale(responsiveX(6), responsiveY(6));
+        HighScore5Text.getData().setScale(responsiveX(6), responsiveY(6));
 
         HighScoreLayout.setText(HighScoreText, "" + HighScore);
         HighScore2Layout.setText(HighScore2Text, "" + HighScore2);
@@ -88,11 +89,11 @@ public class HighScoresState extends State implements Input.TextInputListener{
     public void render(SpriteBatch sb) {
         sb.begin();
         sb.draw(fondo, 0, campos, BattleJump.width, BattleJump.height);
-        HighScoreText.draw(sb, HighScoreLayout, BattleJump.width / 2 - HighScoreWidth / 2, BattleJump.height / 2 + responsiveY(400));
-        HighScore2Text.draw(sb, HighScore2Layout, BattleJump.width / 2 - HighScore2Width / 2, BattleJump.height / 2 + responsiveY(200));
-        HighScore3Text.draw(sb, HighScore3Layout, BattleJump.width / 2 - HighScore3Width / 2, BattleJump.height / 2);
-        HighScore4Text.draw(sb, HighScore4Layout, BattleJump.width / 2 - HighScore4Width / 2, BattleJump.height / 2 - responsiveY(200));
-        HighScore5Text.draw(sb, HighScore5Layout, BattleJump.width / 2 - HighScore5Width / 2, BattleJump.height / 2 - responsiveY(400));
+        HighScoreText.draw(sb, HighScoreLayout, BattleJump.width / 2 - HighScoreWidth / 2, campos + BattleJump.height / 2 + responsiveY(400));
+        HighScore2Text.draw(sb, HighScore2Layout, BattleJump.width / 2 - HighScore2Width / 2, campos + BattleJump.height / 2 + responsiveY(200));
+        HighScore3Text.draw(sb, HighScore3Layout, BattleJump.width / 2 - HighScore3Width / 2, campos + BattleJump.height / 2);
+        HighScore4Text.draw(sb, HighScore4Layout, BattleJump.width / 2 - HighScore4Width / 2, campos + BattleJump.height / 2 - responsiveY(200));
+        HighScore5Text.draw(sb, HighScore5Layout, BattleJump.width / 2 - HighScore5Width / 2, campos + BattleJump.height / 2 - responsiveY(400));
         sb.end();
     }
 
@@ -119,6 +120,12 @@ public class HighScoresState extends State implements Input.TextInputListener{
     public int responsiveY (int tamaño){
         int tamañoY;
         tamañoY = (BattleJump.height * tamaño) / 2560;
+        return tamañoY;
+    }
+
+    public int responsiveX (int tamaño){
+        int tamañoY;
+        tamañoY = (BattleJump.width * tamaño) / 1440;
         return tamañoY;
     }
 }

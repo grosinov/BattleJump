@@ -22,7 +22,7 @@ public class BattleJump extends ApplicationAdapter {
 		width = Gdx.graphics.getWidth();
 		height = Gdx.graphics.getHeight();
 
-		gsm.push(new MenuState(gsm));
+		gsm.push(new MenuState(gsm, 0));
 	}
 
 	@Override

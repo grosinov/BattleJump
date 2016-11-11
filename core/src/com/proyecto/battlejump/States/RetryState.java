@@ -31,6 +31,7 @@ public class RetryState extends State implements Input.TextInputListener{
     int HighScore3 = prefs.getInteger("highscore3");
     int HighScore4 = prefs.getInteger("highscore4");
     int HighScore5 = prefs.getInteger("highscore5");
+    boolean cambio = false;
 
     public RetryState(GameStateManager gsm, int puntaje, float campos) {
         super(gsm);
@@ -52,48 +53,56 @@ public class RetryState extends State implements Input.TextInputListener{
             HighScore3 = HighScore2;
             HighScore2 = HighScore;
             HighScore = puntaje;
-            prefs.putInteger("highscore", HighScore);
-            prefs.flush();
-        } else {
-            if (puntaje > HighScore2) {
-                HighScore5 = HighScore4;
-                HighScore4 = HighScore3;
-                HighScore3 = HighScore2;
-                HighScore2 = puntaje;
-            }
-            if (puntaje > HighScore3) {
-                HighScore5 = HighScore4;
-                HighScore4 = HighScore3;
-                HighScore3 = puntaje;
-            }
-            if (puntaje > HighScore4) {
-                HighScore5 = HighScore4;
-                HighScore4 = puntaje;
-            }
-            if (puntaje > HighScore5) {
-                HighScore5 = puntaje;
-            }
-            prefs.putInteger("highscore2", HighScore2);
-            prefs.putInteger("highscore3", HighScore3);
-            prefs.putInteger("highscore4", HighScore4);
-            prefs.putInteger("highscore5", HighScore5);
-            prefs.flush();
+            cambio = true;
         }
+
+        if (puntaje > HighScore2 && !cambio) {
+            HighScore5 = HighScore4;
+            HighScore4 = HighScore3;
+            HighScore3 = HighScore2;
+            HighScore2 = puntaje;
+            cambio = true;
+        }
+
+        if (puntaje > HighScore3 && !cambio) {
+            HighScore5 = HighScore4;
+            HighScore4 = HighScore3;
+            HighScore3 = puntaje;
+            cambio = true;
+        }
+
+        if (puntaje > HighScore4 && !cambio) {
+            HighScore5 = HighScore4;
+            HighScore4 = puntaje;
+            cambio = true;
+        }
+
+        if (puntaje > HighScore5 && !cambio) {
+            HighScore5 = puntaje;
+            cambio = true;
+        }
+
+        prefs.putInteger("highscore", HighScore);
+        prefs.putInteger("highscore2", HighScore2);
+        prefs.putInteger("highscore3", HighScore3);
+        prefs.putInteger("highscore4", HighScore4);
+        prefs.putInteger("highscore5", HighScore5);
+        prefs.flush();
     }
 
     @Override
     public void handleInput() {
         if(Gdx.input.justTouched()){
-            gsm.set(new MenuState(gsm));
+            gsm.set(new MenuState(gsm, campos - BattleJump.height / 2));
         }
     }
 
     @Override
     public void update(float dt) {
         handleInput();
-        perdiotext.getData().setScale(responsiveX(5), responsiveY(5));
-        puntajetext.getData().setScale(responsiveX(5), responsiveY(5));
-        highscoretext.getData().setScale(responsiveX(5), responsiveY(5));
+        perdiotext.getData().setScale(responsiveX(6), responsiveY(6));
+        puntajetext.getData().setScale(responsiveX(6), responsiveY(6));
+        highscoretext.getData().setScale(responsiveX(6), responsiveY(6));
 
         perdioLayout.setText(perdiotext, perdio);
         puntajeLayout.setText(puntajetext, "Tu puntaje final es: " + String.valueOf(puntaje));

@@ -49,7 +49,7 @@ public class PlayState extends State {
     private int platpinchepos;
     private int trampolinpos;
     private int monedapos;
-    private int comienzoAtardecer = responsiveY(9990);
+    private int comienzoAtardecer = responsiveY(10000);
     private int comienzoNoche;
     float dia = 0;
     boolean espacio;
@@ -130,8 +130,6 @@ public class PlayState extends State {
                 platforms.add(plat);
                 if(i == trampolinpos){
                     trampolin = new Trampolin(plat.getPosplataforma().x, plat.getPosplataforma().y);
-                } else if(i == monedapos){
-                    moneda = new Moneda();
                 }
             }
 
@@ -141,6 +139,7 @@ public class PlayState extends State {
 
         LeftNube = new Nube();
         RightNube = new Nube();
+        moneda = new Moneda();
 
         prefs = Gdx.app.getPreferences("My Preferences");
         dinero = prefs.getInteger("Dinero");
@@ -162,8 +161,8 @@ public class PlayState extends State {
         handleInput();
         personaje.update(dt);
 
-        puntajetext.getData().setScale(5, 5);
-        dinerotext.getData().setScale(5, 5);
+        puntajetext.getData().setScale(responsiveX(6), responsiveY(6));
+        dinerotext.getData().setScale(responsiveX(6), responsiveY(6));
         puntajeLayout.setText(puntajetext, String.valueOf(puntaje));
         dineroLayout.setText(dinerotext, String.valueOf(dinero));
         puntajeHeight = puntajeLayout.height;
@@ -216,14 +215,16 @@ public class PlayState extends State {
                 yPlatPos += platSpace;
                 if(i == trampolinpos){
                     trampolin.reposition(plat.getPosplataforma().x, plat.getPosplataforma().y);
-                } else if(i == monedapos){
-                    moneda.reposition(Math .round(cam.position.y + (cam.viewportHeight / 2)));
                 }
             }
 
             if(plat.collides(personaje.getPlayerCollision()) && personaje.getVelocity().y <= 0 || personaje.getPosition().y <= 0){
                 personaje.jump();
             }
+        }
+
+        if(cam.position.y - (cam.viewportHeight / 2) > moneda.getPosMoneda().y){
+            moneda.reposition(Math.round(cam.position.y + (cam.viewportHeight / 2)));
         }
 
         for(int i = 0; i < plataformasrotas.size(); i++) {
@@ -250,11 +251,18 @@ public class PlayState extends State {
             }
 
             if(pncplat.collides(personaje.getPlayerCollision()) && personaje.getVelocity().y <= 0){
+                prefs.putInteger("Dinero", dinero);
+                prefs.flush();
                 gsm.set(new RetryState(gsm, puntaje, cam.position.y));
             }
         }
 
         if(burbuja.collides(personaje.getPlayerCollisionPoder())){
+            if(BattleJump.height > 1280){
+                proximaposicion = personaje.getPosition().y + responsiveY(2200);
+            } else {
+                proximaposicion = personaje.getPosition().y + responsiveY(3000);
+            }
             proximaposicion = personaje.getPosition().y + responsiveY(2200);
             burbuja.reposition(Math .round(cam.position.y + (cam.viewportHeight / 2)));
             personaje.burbuja();
@@ -266,7 +274,7 @@ public class PlayState extends State {
 
         if(moneda.collides(personaje.getPlayerCollisionPoder())){
             dinero += 100;
-            moneda.reposition(Math .round(cam.position.y + (cam.viewportHeight / 2)));
+            moneda.reposition(Math.round(cam.position.y + (cam.viewportHeight / 2)));
         }
 
         if(personaje.getPosition().y >= proximaposicion){
@@ -286,8 +294,9 @@ public class PlayState extends State {
         }
 
         if (cam.position.y - (cam.viewportHeight / 2) > personaje.getPosition().y + responsiveY(50)){
-            gsm.set(new RetryState(gsm, puntaje, cam.position.y));
             prefs.putInteger("Dinero", dinero);
+            prefs.flush();
+            gsm.set(new RetryState(gsm, puntaje, cam.position.y));
         }
 
         if(cam.position.y + (cam.viewportHeight / 2) >= comienzoAtardecer) {
@@ -369,7 +378,8 @@ public class PlayState extends State {
         sb.draw(burbuja.getBurbuja(), burbuja.getPosBurbuja().x, burbuja.getPosBurbuja().y, responsiveX(burbuja.getBurbuja().getWidth()), responsiveY(burbuja.getBurbuja().getHeight()));
 
         puntajetext.draw(sb, puntajeLayout, 0, (cam.position.y + (cam.viewportHeight / 2)) - puntajeHeight);
-        dinerotext.draw(sb, dineroLayout, 0, (cam.position.y + (cam.viewportHeight / 2)) - puntajeHeight - dineroHeight);
+        sb.draw(moneda.getMoneda(), 0, (cam.position.y + (cam.viewportHeight / 2)) - puntajeHeight - dineroHeight - responsiveY(moneda.getMoneda().getHeight()) - responsiveY(5), responsiveX(moneda.getMoneda().getWidth()), responsiveY(moneda.getMoneda().getHeight()));
+        dinerotext.draw(sb, dineroLayout, 0 + responsiveX(moneda.getMoneda().getWidth()), (cam.position.y + (cam.viewportHeight / 2)) - puntajeHeight - dineroHeight - responsiveY(25));
 
         sb.end();
     }

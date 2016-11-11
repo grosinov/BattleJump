@@ -10,8 +10,10 @@ public class MenuState extends State{
     private Texture btnPlay;
     private Texture btnHighScore;
     private Texture btnTienda;
-    public MenuState(GameStateManager gsm) {
+    float campos;
+    public MenuState(GameStateManager gsm, float campos) {
         super(gsm);
+        this.campos = campos;
         fondo = new Texture("Inicio.png");
         btnPlay = new Texture("btnJugar.png");
         btnHighScore = new Texture("btnHighScore.png");
@@ -21,8 +23,16 @@ public class MenuState extends State{
     @Override
     public void handleInput() {
         if(Gdx.input.justTouched()){
-            if(Gdx.input.getX() > BattleJump.width / 2 - btnPlay.getWidth() / 2 && Gdx.input.getX() < BattleJump.width / 2 - btnPlay.getWidth() / 2 + btnPlay.getWidth() && Gdx.input.getY() > BattleJump.height / 2 - btnPlay.getHeight() / 2 + BattleJump.height * 100 / 2560 && Gdx.input.getY() < BattleJump.height / 2 - btnPlay.getHeight() / 2 + BattleJump.height * 100 / 2560 + btnPlay.getHeight()){
-                gsm.set(new TiendaState(gsm));
+            if(Gdx.input.getX() > BattleJump.width / 2 - btnPlay.getWidth() / 2 && Gdx.input.getX() < BattleJump.width / 2 - btnPlay.getWidth() / 2 + btnPlay.getWidth() && Gdx.input.getY() < BattleJump.height - BattleJump.height / 2 + responsiveY(btnHighScore.getHeight() / 2) && Gdx.input.getY() > BattleJump.height - BattleJump.height / 2 + responsiveY(btnHighScore.getHeight() / 2) - responsiveY(btnHighScore.getHeight())){
+                gsm.set(new HighScoresState(gsm, campos));
+            }
+
+            if(Gdx.input.getX() > BattleJump.width / 2 - btnPlay.getWidth() / 2 && Gdx.input.getX() < BattleJump.width / 2 - btnPlay.getWidth() / 2 + btnPlay.getWidth() && Gdx.input.getY() < BattleJump.height - BattleJump.height / 2 - responsiveY(btnPlay.getHeight()) && Gdx.input.getY() > BattleJump.height - BattleJump.height / 2 - responsiveY(btnPlay.getHeight() * 2) - responsiveY(btnHighScore.getHeight())){
+                gsm.set(new PlayState(gsm));
+            }
+
+            if(Gdx.input.getX() > BattleJump.width / 2 - btnPlay.getWidth() / 2 && Gdx.input.getX() < BattleJump.width / 2 - btnPlay.getWidth() / 2 + btnPlay.getWidth() && Gdx.input.getY() < BattleJump.height - BattleJump.height / 2 + responsiveY(btnTienda.getHeight() / 2) + responsiveY((3 * btnPlay.getHeight()) / 2) && Gdx.input.getY() > BattleJump.height - BattleJump.height / 2 + responsiveY(btnTienda.getHeight() / 2) + responsiveY((3 * btnPlay.getHeight()) / 2) - responsiveY(btnHighScore.getHeight())){
+                gsm.set(new TiendaState(gsm, campos));
             }
         }
     }
@@ -35,10 +45,10 @@ public class MenuState extends State{
     @Override
     public void render(SpriteBatch sb) {
         sb.begin();
-        sb.draw(fondo, 0,0, BattleJump.width, BattleJump.height);
-        sb.draw(btnPlay, BattleJump.width / 2 - btnPlay.getWidth() / 2, BattleJump.height / 2 - btnPlay.getHeight() / 2 + BattleJump.height * 500 / 2560, btnPlay.getWidth(), btnPlay.getHeight());
-        sb.draw(btnHighScore, BattleJump.width / 2 - btnHighScore.getWidth() / 2, BattleJump.height / 2 - btnHighScore.getHeight() / 2, btnHighScore.getWidth(), btnHighScore.getHeight());
-        sb.draw(btnTienda, BattleJump.width / 2 - btnHighScore.getWidth() / 2, BattleJump.height / 2 - btnHighScore.getHeight() / 2 - btnTienda.getHeight() - responsiveY(100), btnTienda.getWidth(), btnTienda.getHeight());
+        sb.draw(fondo, 0, campos, BattleJump.width, BattleJump.height);
+        sb.draw(btnPlay, BattleJump.width / 2 - responsiveX(btnPlay.getWidth() / 2), campos + BattleJump.height / 2 - responsiveY(btnPlay.getHeight() / 2) + responsiveY((3 * btnPlay.getHeight()) / 2), responsiveX(btnPlay.getWidth()), responsiveY(btnPlay.getHeight()));
+        sb.draw(btnHighScore, BattleJump.width / 2 - responsiveX(btnHighScore.getWidth() / 2), campos + BattleJump.height / 2 - responsiveY(btnHighScore.getHeight() / 2), responsiveX(btnHighScore.getWidth()), responsiveY(btnHighScore.getHeight()));
+        sb.draw(btnTienda, BattleJump.width / 2 - responsiveX(btnTienda.getWidth() / 2), campos + BattleJump.height / 2 - responsiveY(btnPlay.getHeight() / 2) - responsiveY((3 * btnPlay.getHeight()) / 2), responsiveX(btnTienda.getWidth()), responsiveY(btnTienda.getHeight()));
         sb.end();
     }
 
@@ -51,6 +61,12 @@ public class MenuState extends State{
     public int responsiveY (int tamaño){
         int tamañoY;
         tamañoY = (BattleJump.height * tamaño) / 2560;
+        return tamañoY;
+    }
+
+    public int responsiveX (int tamaño){
+        int tamañoY;
+        tamañoY = (BattleJump.width * tamaño) / 1440;
         return tamañoY;
     }
 }
