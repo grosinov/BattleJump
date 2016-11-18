@@ -17,14 +17,27 @@ public class Speedy {
     private Rectangle playerCollision;
     private Rectangle colisionPoder;
 
+    private Texture personajeElejido;
     private Texture personaje;
+    private Texture personaje1;
+    private Texture personaje2;
+    private Texture personaje3;
+    private Texture burbuja;
+
     Preferences prefs = Gdx.app.getPreferences("My Preferences");
     int seleccionado = prefs.getInteger("Seleccionado");
 
-    public Speedy(float x, float y){
+    public Speedy(float x, float y) {
         position = new Vector3(x, y, 0);
         velocity = new Vector3(0, 0, 0);
+        personajeElejido = new Texture("personaje.png");
+        personaje = new Texture("personaje.png");
+        personaje1 = new Texture("Personaje1.png");
+        personaje2 = new Texture("Personaje2.png");
+        personaje3 = new Texture("Personaje3.png");
+        burbuja = new Texture("burbuja.png");
         elejirPersonaje();
+
         playerCollision = new Rectangle(x, y, responsiveX(personaje.getWidth()), (responsiveY(personaje.getHeight()) * 2) / personaje.getHeight());
         colisionPoder = new Rectangle(x, y, responsiveX(personaje.getWidth()), responsiveY(personaje.getHeight()));
     }
@@ -43,7 +56,7 @@ public class Speedy {
     }
 
     public Texture getPersonaje() {
-            return personaje;
+            return personajeElejido;
         }
 
     public Vector3 getVelocity() { return velocity; }
@@ -63,8 +76,7 @@ public class Speedy {
     }
 
     public void burbuja(){
-        personaje = null;
-        personaje = new Texture("burbuja.png");
+        personajeElejido = burbuja;
         if(BattleJump.height > 1280){
             velocity.y = responsiveY(2500);
         } else {
@@ -82,7 +94,6 @@ public class Speedy {
     }
 
     public void normal(){
-        personaje = null;
         elejirPersonaje();
     }
 
@@ -121,16 +132,16 @@ public class Speedy {
     private void elejirPersonaje(){
         switch (seleccionado){
             case 0:
-                personaje = new Texture("personaje.png");
+                personajeElejido = personaje;
                 break;
             case 1:
-                personaje = new Texture("Personaje1.png");
+                personajeElejido = personaje1;
                 break;
             case 2:
-                personaje = new Texture("Personaje2.png");
+                personajeElejido = personaje2;
                 break;
             case 3:
-                personaje = new Texture("Personaje3.png");
+                personajeElejido = personaje3;
                 break;
         }
     }

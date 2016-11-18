@@ -304,6 +304,7 @@ public class PlayState extends State {
             espacio = true;
             existeatardecer = true;
         }
+
         if(cam.position.y - (cam.viewportHeight / 2) >= comienzoNoche){
             momento = 3;
         }
@@ -374,8 +375,8 @@ public class PlayState extends State {
             }
         }
         sb.draw(trampolin.getTrampolin(), trampolin.getTramPos().x, trampolin.getTramPos().y, responsiveX(trampolin.getTrampolin().getWidth()), responsiveY(trampolin.getTrampolin().getHeight()));
-        sb.draw(moneda.getMoneda(), moneda.getPosMoneda().x, moneda.getPosMoneda().y, responsiveX(moneda.getMoneda().getWidth()), responsiveY(moneda.getMoneda().getHeight()));
         sb.draw(burbuja.getBurbuja(), burbuja.getPosBurbuja().x, burbuja.getPosBurbuja().y, responsiveX(burbuja.getBurbuja().getWidth()), responsiveY(burbuja.getBurbuja().getHeight()));
+        sb.draw(moneda.getMoneda(), moneda.getPosMoneda().x, moneda.getPosMoneda().y, responsiveX(moneda.getMoneda().getWidth()), responsiveY(moneda.getMoneda().getHeight()));
 
         puntajetext.draw(sb, puntajeLayout, 0, (cam.position.y + (cam.viewportHeight / 2)) - puntajeHeight);
         sb.draw(moneda.getMoneda(), 0, (cam.position.y + (cam.viewportHeight / 2)) - puntajeHeight - dineroHeight - responsiveY(moneda.getMoneda().getHeight()) - responsiveY(5), responsiveX(moneda.getMoneda().getWidth()), responsiveY(moneda.getMoneda().getHeight()));
