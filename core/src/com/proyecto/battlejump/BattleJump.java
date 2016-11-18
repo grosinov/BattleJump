@@ -18,7 +18,7 @@ public class BattleJump extends ApplicationAdapter {
 	public void create () {
 		batch = new SpriteBatch();
 		gsm = new GameStateManager();
-		Gdx.gl.glClearColor(1, 0, 0, 1);
+		Gdx.gl.glClearColor((float)74/255, (float)167/255, (float)221/255, 0f);
 		width = Gdx.graphics.getWidth();
 		height = Gdx.graphics.getHeight();
 
